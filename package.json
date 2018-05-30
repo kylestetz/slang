@@ -1,0 +1,22 @@
+{
+  "name": "slang",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "watch": "webpack -d --watch"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "adsr-envelope": "^1.0.0",
+    "ohm-js": "^0.14.0"
+  },
+  "devDependencies": {
+    "eslint": "^4.19.1",
+    "eslint-config-airbnb-base": "^12.1.0",
+    "eslint-plugin-import": "^2.12.0",
+    "webpack": "^4.10.1",
+    "webpack-cli": "^2.1.4"
+  }
+}
