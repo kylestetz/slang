@@ -1,8 +1,8 @@
 import Sound from './classes/Sound';
+import context from './helpers/context';
 
 const model = {
 	sounds: {},
-	schedule: {},
 };
 
 function runScene(scene) {
@@ -20,7 +20,12 @@ function runScene(scene) {
 		}
 	});
 
+	const startTime = context.currentTime + 0.01;
+
 	// Stage 2: Schedule the sound
+	Object.keys(model.sounds).forEach((id) => {
+		model.sounds[id].start(startTime);
+	});
 }
 
 function parseGraph(graph) {
@@ -49,10 +54,17 @@ function parseGraph(graph) {
 function parsePlay(operation) {
 	console.log('parsePlay:', operation);
 
-	model.sounds[operation.sound.name].schedule();
+	model.sounds[operation.sound.name].schedule(operation.patterns);
 }
 
+function clearScene() {
+	Object.keys(model.sounds).forEach((id) => {
+		model.sounds[id].destroy();
+		delete model.sounds[id];
+	});
+}
 
 export default {
 	runScene,
+	clearScene,
 };

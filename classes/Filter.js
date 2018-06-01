@@ -18,13 +18,29 @@ class Filter extends Block {
 	}
 
 	instantiate() {
+		if (this.getPolyMode()) return;
+
 		this.filter = context.createBiquadFilter();
 		this.filter.type = typeMap[this.type];
-		this.filter.frequency.setValueAtTime((this.amount / 127) * 22050, context.currentTime, 0);
+		this.filter.frequency.setValueAtTime((this.amount / 127) * 11025, context.currentTime, 0);
 		this.filter.Q.setValueAtTime(this.Q, context.currentTime, 0);
 
 		this.getInput().connect(this.filter);
 		this.filter.connect(this.getOutput());
+	}
+
+	schedule() {
+		if (!this.getPolyMode()) return;
+
+		const filter = context.createBiquadFilter();
+		filter.type = typeMap[this.type];
+		filter.frequency.setValueAtTime((this.amount / 127) * 11025, context.currentTime, 0);
+		filter.Q.setValueAtTime(this.Q, context.currentTime, 0);
+
+		return {
+			input: filter,
+			output: filter,
+		};
 	}
 }
 

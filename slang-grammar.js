@@ -41,10 +41,11 @@ Sound {
     pipe the sounds together.
   */
 
-  SoundBlock = letter+ "(" listOf<soundArgument, delimiter> ")" name?
+  PolySoundBlock = MonoSoundBlock ("+" MonoSoundBlock)*
+  MonoSoundBlock = letter+ "(" listOf<soundArgument, delimiter> ")" name?
   name = ":" alnum+
 
-  Pipe = ("~" SoundBlock)+
+  Pipe = ("~" PolySoundBlock)+
 
   /*
     PLAY LINES

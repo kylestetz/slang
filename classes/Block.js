@@ -18,6 +18,15 @@ class Block {
 		// having to name it all particular.
 		this._input = context.createGain();
 		this._output = context.createGain();
+
+		// Some blocks will want to implement
+		// polyphony, which really just means
+		// returning a specific audio node from
+		// `schedule` so that it can be chained
+		// to other nodes. Implementers just
+		// need to call this.getPolyMode() to
+		// find out which behavior to follow.
+		this._polyMode = false;
 	}
 
 	instantiate() {
@@ -42,12 +51,24 @@ class Block {
 		// oscillators or what have you.
 	}
 
+	destroy() {
+		this._output.disconnect();
+	}
+
 	getInput() {
 		return this._input;
 	}
 
 	getOutput() {
 		return this._output;
+	}
+
+	setPolyMode(flag) {
+		this._polyMode = flag;
+	}
+
+	getPolyMode() {
+		return this._polyMode;
 	}
 }
 

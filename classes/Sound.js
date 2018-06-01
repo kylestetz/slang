@@ -1,13 +1,7 @@
+import Scheduler from './Scheduler';
 import context from '../helpers/context';
-import Osc from './Osc';
-import Filter from './Filter';
-
-// This object maps available functions to
-// the classes that power them.
-const classMap = {
-	'osc': Osc,
-	'filter': Filter,
-};
+import PolyBlock from './PolyBlock';
+import classMap from './classMap';
 
 class Sound {
 	constructor(graph) {
@@ -17,6 +11,7 @@ class Sound {
 		// instances as a flat object keyed by
 		// the block's ID.
 		this.model = {};
+		this.schedulers = [];
 
 		// We're also going to store a map of
 		// the connections between Blocks. These
@@ -38,13 +33,11 @@ class Sound {
 		// Each sound has a final destination node
 		// that all of the pipes end with.
 		this.output = context.createGain();
+		this.output.gain.setValueAtTime(0.5, context.currentTime, 0);
 		this.output.connect(context.destination);
 
 		// Create the first graph
 		this.appendToGraph(graph);
-
-		console.log(this.model);
-		console.log(this.connections);
 	}
 
 	nextId() {
@@ -69,21 +62,37 @@ class Sound {
 		this.connections[index] = [];
 
 		const model = pipe.reduce((model, block, i) => {
-			const thisId = block.name || `${block.function}${this.nextId()}`;
-			if (classMap[block.function]) {
-				// If the block was named, we'll stash
-				// it by name in the model. Otherwise,
-				// give it an internal ID that we can
-				// use to reference it.
-				model[thisId] = new classMap[block.function](...block.arguments);
-				model[thisId].instantiate(/* context */);
+			// A block can either be a simple Block function
+			// like `osc` & `filter`, OR it can be a polyblock.
+			// We have to treat those two cases differently.
 
-				// Add this ID to the connection list.
+			if (block.type && block.type === 'polyblock') {
+				// It seems like PolyBlocks aren't going to
+				// be able to support name variables? Tbd.
+				const thisId = `poly${this.nextId()}`;
+				model[thisId] = new PolyBlock(block);
+				model[thisId].instantiate();
+
 				this.connections[index].push(thisId);
 
 				return model;
 			} else {
-				throw new Error(`${this.name}: Block type "${block.function}" does not exist`);
+				const thisId = block.name || `${block.function}${this.nextId()}`;
+				if (classMap[block.function]) {
+					// If the block was named, we'll stash
+					// it by name in the model. Otherwise,
+					// give it an internal ID that we can
+					// use to reference it.
+					model[thisId] = new classMap[block.function](...block.arguments);
+					model[thisId].instantiate();
+
+					// Add this ID to the connection list.
+					this.connections[index].push(thisId);
+
+					return model;
+				} else {
+					throw new Error(`${this.name}: Block type "${block.function}" does not exist`);
+				}
 			}
 		}, {});
 
@@ -111,6 +120,7 @@ class Sound {
 				// We're at the final block; connect
 				// it to the output.
 				console.log('connecting', connections[i], 'to the sound.output');
+				console.log(this.model[connections[i]]);
 				this.model[connections[i]]
 					.getOutput()
 					.connect(this.output);
@@ -118,15 +128,35 @@ class Sound {
 		}
 	}
 
-	schedule(queue) {
-		// schedule notes by calling into
-		// the block instances.
+	schedule(patterns) {
+		// This method is called once for each new set of
+		// patterns to use. We'll create a scheduler for
+		// each one.
 
-		console.log('current time is', context.currentTime);
+		const scheduler = new Scheduler(patterns);
+
+		scheduler.tick((timestamp, note) => {
+			console.log('Scheduler::tick', timestamp, note);
+			Object.keys(this.model).forEach((id) => {
+				this.model[id].schedule(timestamp, note);
+			});
+		});
+
+		this.schedulers.push(scheduler);
+	}
+
+	start(timestamp) {
+		this.schedulers.forEach(scheduler => scheduler.start(timestamp));
+	}
+
+	destroy() {
+		this.schedulers.forEach(scheduler => scheduler.stop());
 
 		Object.keys(this.model).forEach((id) => {
-			this.model[id].schedule(context.currentTime + 1, 69);
+			this.model[id].destroy();
 		});
+
+		this.output.disconnect();
 	}
 }
 
