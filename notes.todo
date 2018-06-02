@@ -1,12 +1,55 @@
 Implement:
   ✔ E3-style notes @done (18-05-31 18:47)
   ☐ scene restarting at the next interval?
-  ☐ randoms
+  ✘ randoms @cancelled (18-06-01 16:24)
   ✔ polyblocks @done (18-05-31 20:00)
     ✔ cool yeah that could be a class? @done (18-05-31 20:00)
     ✔ the schedule fn could link together the blocks for each note triggered @done (18-05-31 20:00)
-  ☐ variables
+  ✘ variables @cancelled (18-06-01 16:24)
   ☐ more blocks
+  ☐ sharp notes
+  ☐ Lists
+    ✔ step 1: discrete list as soundArgument @done (18-06-01 17:07)
+    ✔ step 2: range as soundArgument @done (18-06-01 17:07)
+    ☐ step 3: Function as sound argument
+    ☐ step 4: List class
+      - the list should exist as data in the CST (not a fn)
+        - pros: clear data structure
+        - cons: why the heck are we making it harder on purpose
 
 Design:
-  ☐ ?
+  ✔ clojure-style parens @done (18-06-01 16:38)
+  ☐ lists and ranges
+    ☐ List class can hold a finite list or a range
+    ☐ lists won't be used outside of functions! I think
+
+
+todos:
+- get rid of commas as separators
+- what are our data types?
+  - functions
+    - functions can accept any ol shit as arguments
+      - can they accept other function calls?
+  - lists
+    - ranges are a type of list
+    - List could be a class that has `.asArray` and `.next` methods on it
+      so that sequences could get counting/wrapping for free and blocks/fns
+      can choose how to interpret them
+  - numbers
+  - notes
+
+# functions
+  (osc sine)
+  (random [0..127])
+  (random (chord bebop E3))
+
+# lists
+  [64 75 86 52 62]
+# ranges
+  [E3..E4]
+  [0..127]
+
+@synth (osc tri) + (adsr) ~ (filter lp 5) ~ (delay 0.5 50)
+
+
+play @synth (rhythm xoxxoxoxoo) (notes [])

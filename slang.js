@@ -49,13 +49,14 @@ semantics.addOperation('toAST', {
 		};
 	},
 
-	MonoSoundBlock(fn, lp, list, rp, name) {
+	MonoSoundBlock(lp, list, rp, name) {
+		const [func, ...rest] = list.asIteration().toAST();
 		return {
 			type: 'block',
 			// This is the name of the block function.
-			function: fn.sourceString,
-			// This is going to product a list of soundArguments.
-			arguments: list.asIteration().toAST(),
+			function: func,
+			// This is will be a list of soundArguments.
+			arguments: rest,
 			name: name.sourceString,
 		}
 	},

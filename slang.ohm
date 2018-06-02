@@ -21,6 +21,7 @@ Sound {
   soundAccessor = sound propertyAccessor?
   soundArgument = alnum+ -- number
     | float -- float
+    | note -- note
 
   /*
     GRAPH LINES
@@ -41,7 +42,7 @@ Sound {
   */
 
   PolySoundBlock = MonoSoundBlock ("+" MonoSoundBlock)*
-  MonoSoundBlock = letter+ "(" listOf<soundArgument, delimiter> ")" name?
+  MonoSoundBlock = "(" listOf<soundArgument, delimiter> ")" name?
   name = ":" alnum+
 
   Pipe = ("~" PolySoundBlock)+
@@ -77,9 +78,13 @@ Sound {
   */
 
   delimiter = ", " | "," | " "
+
   float = digit "." digit+ -- fullFloat
     | digit "." -- dot
     | "." digit+ -- dotStart
     | digit -- noDot
-  note = alnum+
+
+  note = letter "#" digit+ -- sharp
+    | letter "b" digit+ -- flat
+    | alnum+ -- major
 }

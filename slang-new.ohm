@@ -1,4 +1,3 @@
-module.exports = `
 Sound {
   Line = Graph | Play | Comment
 
@@ -23,6 +22,9 @@ Sound {
   soundArgument = alnum+ -- number
     | float -- float
     | note -- note
+    | list -- list
+    | range -- range
+    | function -- function
 
   /*
     GRAPH LINES
@@ -46,6 +48,8 @@ Sound {
   MonoSoundBlock = "(" listOf<soundArgument, delimiter> ")" name?
   name = ":" alnum+
 
+  function = "(" listOf<soundArgument, delimiter> ")"
+
   Pipe = ("~" PolySoundBlock)+
 
   /*
@@ -66,7 +70,7 @@ Sound {
     lists of characters with delimiters.
   */
 
-  Pattern = listOf<RhythmDeclaration, delimiter>
+  Pattern = listOf<function, delimiter>
   RhythmDeclaration = DrumPattern
     | NotePattern
     | TimePattern
@@ -77,6 +81,9 @@ Sound {
   /*
     MISC nitty gritty stuff
   */
+
+  list = "[" listOf<soundArgument, delimiter> "]"
+  range = "[" soundArgument ".." soundArgument "]"
 
   delimiter = ", " | "," | " "
 
@@ -89,4 +96,3 @@ Sound {
     | letter "b" digit+ -- flat
     | alnum+ -- major
 }
-`;
