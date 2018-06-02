@@ -135,10 +135,11 @@ class Sound {
 
 		const scheduler = new Scheduler(patterns);
 
-		scheduler.tick((timestamp, note) => {
-			console.log('Scheduler::tick', timestamp, note);
+		scheduler.tick((start, stop, note) => {
+			console.log('Scheduler::tick', start, stop, note);
 			Object.keys(this.model).forEach((id) => {
-				this.model[id].schedule(timestamp, note);
+				console.log('Calling schedule on', id, 'with', start, stop, note);
+				this.model[id].schedule(start, stop, note);
 			});
 		});
 

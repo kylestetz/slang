@@ -24,7 +24,7 @@ class Osc extends Block {
 		this.type = type;
 	}
 
-	schedule(timestamp, note) {
+	schedule(start, stop, note) {
 		const osc = context.createOscillator();
 
 		osc.type = typeMap[this.type];
@@ -34,8 +34,8 @@ class Osc extends Block {
 			0
 		);
 
-		osc.start(timestamp);
-		osc.stop(timestamp + .25);
+		osc.start(start);
+		osc.stop(stop);
 
 		osc.onended = () => {
 			osc.disconnect();

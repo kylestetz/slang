@@ -26,7 +26,7 @@ class PolyBlock extends Block {
 			}
 		});
 	}
-	schedule(timestamp, note) {
+	schedule(start, stop, note) {
 		// Here's where we do the polyphonic magic.
 		// All of our blocks have already been told
 		// to act in poly mode, so the return value
@@ -35,7 +35,7 @@ class PolyBlock extends Block {
 
 		// First, map through the blocks and collect
 		// the nodes they return.
-		const connections = this.blocks.map(block => block.schedule(timestamp, note));
+		const connections = this.blocks.map(block => block.schedule(start, stop, note));
 
 		// Now loop through them and chain them together.
 		for (let i = 0; i < connections.length; i++) {

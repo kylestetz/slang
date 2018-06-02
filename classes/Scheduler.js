@@ -6,16 +6,19 @@ const DIVISION = 1 / (TEMPO * 1/60) / 2;
 export default class Scheduler {
 	constructor(patterns) {
 		console.log('Scheduler::constructor', patterns);
-		// These will be our defaults.
+		// Start with defaults for
+		// each of the patterns.
+
 		this.rhythmPattern = 'x';
 		this.rhythmPatternIndex = 0;
 
 		this.notePattern = [69];
 		this.notePatternIndex = 0;
 
-		// Not implemented yet!
-		this.timePattern = [DIVISION];
-		this.timePatternIndex = 0;
+		// These will be the note lengths
+		// of each note.
+		this.lengthPattern = [DIVISION];
+		this.lengthPatternIndex = 0;
 
 		// Store a callback to the Sound here.
 		this.tickCallback = null;
@@ -40,8 +43,8 @@ export default class Scheduler {
 				case 'notes':
 					this.notePattern = pattern.arguments;
 					break;
-				case 'times':
-					this.timePattern = pattern.arguments;
+				case 'length':
+					this.lengthPattern = pattern.arguments;
 					break;
 				default:
 					break;
@@ -62,9 +65,17 @@ export default class Scheduler {
 				// We only want to schedule notes on x's
 				if (this.rhythmPattern[this.rhythmPatternIndex] === 'x') {
 					// schedule stuff!
-					this.tickCallback(this.currentTime, this.notePattern[this.notePatternIndex]);
+					this.tickCallback(
+						// start time
+						this.currentTime,
+						// stop time
+						this.currentTime + this.lengthPattern[this.lengthPatternIndex],
+						// note
+						this.notePattern[this.notePatternIndex]
+					);
 					// increment the note
 					this.notePatternIndex = (this.notePatternIndex + 1) % this.notePattern.length;
+					this.lengthPatternIndex = (this.lengthPatternIndex + 1) % this.lengthPattern.length;
 				}
 				// increment the drum pattern at every beat
 				this.rhythmPatternIndex = (this.rhythmPatternIndex + 1) % this.rhythmPattern.length;

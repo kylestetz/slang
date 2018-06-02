@@ -46,7 +46,7 @@ class Block {
 		this.getOutput().connect(block.getInput());
 	}
 
-	schedule(timestamp) {
+	schedule(start, stop, note) {
 		// use the timestamp to schedule calls to
 		// oscillators or what have you.
 	}

@@ -70,7 +70,7 @@ semantics.addOperation('toAST', {
 		}
 	},
 
-	soundArgument: s => s.sourceString,
+	// soundArgument: s => s.sourceString,
 	soundAccessor(sound, property) {
 		return {
 			name: sound.sourceString,
@@ -104,7 +104,11 @@ semantics.addOperation('toAST', {
 	// 	};
 	// },
 
-	float: (f) => parseFloat(f.sourceString),
+	float: (f) => {
+		console.log('Parsing float?', f.sourceString);
+		console.log('-- ', parseFloat(f.sourceString));
+		return parseFloat(f.sourceString)
+	},
 	// float_dotStart: (d, f) => parseFloat('0.' + f.sourceString),
 	note: n => isNaN(n.sourceString) ? n.sourceString : +n.sourceString,
 });

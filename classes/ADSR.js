@@ -22,7 +22,7 @@ class ADSR extends Block {
 		});
 	}
 
-	schedule(timestamp) {
+	schedule(start, stop) {
 		if (!this.getPolyMode()) {
 			throw new Error(
 				'ADSR can only be used in poly mode! Use + instead of ~ when piping sound into it.'
@@ -31,7 +31,8 @@ class ADSR extends Block {
 
 		const gain = context.createGain();
 		const env = this.envelope.clone();
-		env.applyTo(gain.gain, timestamp);
+		env.gateTime = stop - start;
+		env.applyTo(gain.gain, start);
 
 		return {
 			input: gain,
