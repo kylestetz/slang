@@ -18,14 +18,23 @@ semantics.addOperation('toAST', {
 		};
 	},
 	Line: rule => rule.toAST(),
-	Graph(soundAccessor, pipe) {
+	Graph(soundAccessor, tilde, firstPolyBlock, pipe) {
 		return {
 			type: 'graph',
 			sound: soundAccessor.toAST(),
-			pipe: pipe.toAST()[0],
+			pipe: [firstPolyBlock.toAST(), ...pipe.toAST()[0]],
 		};
 	},
 	Pipe: (char, soundBlock) => soundBlock.toAST(),
+
+	function: (lp, soundArguments, rp) => {
+		const [func, ...rest] = soundArguments.asIteration().toAST();
+		return {
+			type: 'function',
+			function: func,
+			arguments: rest,
+		};
+	},
 
 	PolySoundBlock(monoSB, plus, rest) {
 
@@ -76,24 +85,24 @@ semantics.addOperation('toAST', {
 			patterns: pattern.asIteration().toAST(),
 		};
 	},
-	DrumPattern(p1, letters, p2) {
-		return {
-			type: 'DrumPattern',
-			pattern: letters.sourceString,
-		};
-	},
-	NotePattern(b1, notes, b2) {
-		return {
-			type: 'NotePattern',
-			pattern: notes.asIteration().toAST(),
-		};
-	},
-	TimePattern(b1, times, b2) {
-		return {
-			type: 'TimePattern',
-			pattern: times.asIteration().toAST(),
-		};
-	},
+	// DrumPattern(p1, letters, p2) {
+	// 	return {
+	// 		type: 'DrumPattern',
+	// 		pattern: letters.sourceString,
+	// 	};
+	// },
+	// NotePattern(b1, notes, b2) {
+	// 	return {
+	// 		type: 'NotePattern',
+	// 		pattern: notes.asIteration().toAST(),
+	// 	};
+	// },
+	// TimePattern(b1, times, b2) {
+	// 	return {
+	// 		type: 'TimePattern',
+	// 		pattern: times.asIteration().toAST(),
+	// 	};
+	// },
 
 	float: (f) => parseFloat(f.sourceString),
 	// float_dotStart: (d, f) => parseFloat('0.' + f.sourceString),

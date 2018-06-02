@@ -25,11 +25,7 @@ class Osc extends Block {
 	}
 
 	schedule(timestamp, note) {
-		console.log('Osc::schedule', timestamp);
-
 		const osc = context.createOscillator();
-
-		console.log(note, Note.freq(Note.fromMidi(note)));
 
 		osc.type = typeMap[this.type];
 		osc.frequency.setValueAtTime(

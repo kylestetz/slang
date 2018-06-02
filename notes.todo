@@ -11,21 +11,25 @@ Implement:
   ☐ Lists
     ✔ step 1: discrete list as soundArgument @done (18-06-01 17:07)
     ✔ step 2: range as soundArgument @done (18-06-01 17:07)
-    ☐ step 3: Function as sound argument
+    ✔ step 3: Function as sound argument @done (18-06-02 07:14)
     ☐ step 4: List class
       - the list should exist as data in the CST (not a fn)
         - pros: clear data structure
         - cons: why the heck are we making it harder on purpose
+  ☐ parse functions to make scheduler patterns
 
 Design:
   ✔ clojure-style parens @done (18-06-01 16:38)
-  ☐ lists and ranges
-    ☐ List class can hold a finite list or a range
-    ☐ lists won't be used outside of functions! I think
+  ✔ get rid of pattern definitions @done (18-06-02 07:40)
+  ✔ lists and ranges @done (18-06-02 07:15)
+    ✔ List class can hold a finite list or a range @done (18-06-02 07:14)
+    ✔ lists won't be used outside of functions! I think @done (18-06-02 07:15)
+  ☐ could LFOs be functions with forward-pointing arguments?
+    - @synth ~ (lfo osc.frequency 2 100) ~ (osc tri) + (filter lp 8)
 
 
 todos:
-- get rid of commas as separators
+✔ get rid of commas as separators @done (18-06-02 07:15)
 - what are our data types?
   - functions
     - functions can accept any ol shit as arguments
@@ -53,3 +57,10 @@ todos:
 
 
 play @synth (rhythm xoxxoxoxoo) (notes [])
+
+
+
+Update on my audio language: looking more like Clojure now! Lessons learned so far:
+- the data types should inform the syntax, not the other way around
+- stricter whitespace/delimiters make everything easier
+- don't define things in grammar if they can be interpreted at runtime
