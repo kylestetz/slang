@@ -1,4 +1,5 @@
 import context from '../helpers/context';
+import parseArguments from '../helpers/parseArguments';
 
 /*
 	BLOCK class
@@ -12,7 +13,15 @@ import context from '../helpers/context';
 */
 
 class Block {
-	constructor() {
+	constructor(...args) {
+		// The Block class will parse its arguments,
+		// which may contain function calls or lists,
+		// so that subclasses don't need to worry
+		// about interpreting them. Each subclass will
+		// only need to call `arguments[i].next()`
+		// to grab a parameter.
+		this.arguments = parseArguments(args);
+
 		// This input allows us to give each
 		// block a consistent interface without
 		// having to name it all particular.

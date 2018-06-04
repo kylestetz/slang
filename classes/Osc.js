@@ -1,7 +1,8 @@
+import { Note } from 'tonal';
 import Block from './Block';
 import context from '../helpers/context';
 import mtof from '../helpers/mtof';
-import { Note } from 'tonal';
+import { parseArgument } from '../helpers/parseArguments';
 
 const typeMap = {
 	sin: 'sin',
@@ -18,30 +19,48 @@ const typeMap = {
 }
 
 class Osc extends Block {
-	constructor(type = 'sine') {
-		super();
+	constructor(...args) {
+		super(...args);
 
-		this.type = type;
+		// We'll have this.arguments available to us now,
+		// which did the work of parsing lists and functions
+		// if they were passed in.
+		this.type = this.arguments[0] || parseArgument('sine');
+		this.detune = this.arguments[1] || parseArgument(0);
 	}
 
-	schedule(start, stop, note) {
+	schedule(start, stop, note, envelopeMode) {
 		const osc = context.createOscillator();
 
-		osc.type = typeMap[this.type];
+		osc.type = typeMap[this.type.next()];
+
+		let noteMidiValue = typeof note === 'string' ? Note.midi(note) : note;
 		osc.frequency.setValueAtTime(
-			typeof note === 'string' ? Note.freq(note) : Note.freq(Note.fromMidi(note)),
+			Note.freq(Note.fromMidi(noteMidiValue + this.detune.next())),
 			context.currentTime,
 			0
 		);
 
 		osc.start(start);
-		osc.stop(stop);
+		// Envelope mode is a flag that an ADSR envelope will pass
+		// into Osc if it is controlling this Block. This is the
+		// only reasonable way to solve the problem of the envelope
+		// needing to control the stop time.
+		if (!envelopeMode) osc.stop(stop);
 
 		osc.onended = () => {
 			osc.disconnect();
 		};
 
-		if (this.getPolyMode()) {
+		// Envelope mode returns the osc without setting stop, while
+		// poly mode returns the consistent input/output interface.
+
+		if (envelopeMode) {
+			return {
+				node: osc,
+				property: osc,
+			}
+		} else if (this.getPolyMode()) {
 			// An osc has no input! Not sure
 			// what to do about that.
 			return {
@@ -49,6 +68,8 @@ class Osc extends Block {
 			};
 		}
 
+		// Finally, if we are in mono mode, just connect the osc to
+		// the ouput.
 		osc.connect(this.getOutput());
 	}
 }

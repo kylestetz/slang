@@ -36,6 +36,7 @@ Sound {
   soundArgument = function -- function
     | range -- range
     | list -- list
+    | rhythm -- rhythm
     | float -- float
     | note -- note
     
@@ -97,16 +98,21 @@ Sound {
   */
 
   list = "[" listOf<soundArgument, delimiter> "]"
-  range = "[" soundArgument ".." soundArgument "]"
+  range = "[" int ".." int "]" -- number
+    | "[" note ".." note "]" -- note
 
   delimiter = " "
 
-  float = digit* "." digit+ -- fullFloat
-    | digit "." -- dot
-    | digit+ -- int
+  float = "-"? digit* "." digit+ -- fullFloat
+    | "-"? digit "." -- dot
+    | "-"? digit+ -- int
+  
+  int = "-"? digit+
 
   note = letter "#" digit+ -- sharp
     | letter "b" digit+ -- flat
     | alnum+ -- major
+  
+  rhythm = "r"? digit+ letter
 }
 `;

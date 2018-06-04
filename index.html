@@ -1,13 +1,46 @@
 <html>
 	<head>
 		<style>
+			* {
+				box-sizing: border-box;
+			}
+
+			body, html {
+				height: 100%;
+				margin: 0;
+			}
+
 			body {
 				padding: 24px;
 			}
 
 			.CodeMirror {
+				height: 100% !important;
 				padding: 12px;
 				font-size: 20px;
+				font-family: 'Cousine';
+			}
+
+			.cm-note {
+				color: #8BC34A;
+			}
+			.cm-variable {
+				color: #FF5722 !important;
+			}
+			.cm-number {
+				color: #00BCD4 !important;
+			}
+			.cm-pipe {
+				color: #9c27b0;
+			}
+			.cm-comment {
+				color: #d3ccbb !important;
+			}
+			.cm-beat {
+				color: #ff9800;
+			}
+			.cm-rest {
+				color: #ff980085;
 			}
 		</style>
 	</head>

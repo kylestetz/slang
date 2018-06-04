@@ -1,10 +1,13 @@
 import util from 'util';
 import ohm from 'ohm-js';
+import { range } from 'lodash';
+import * as Range from 'tonal-range';
 import grammarDefinition from './slang-grammar';
 import runtime from './runtime';
 
 import CodeMirror from 'codemirror';
-import js from 'codemirror/mode/javascript/javascript';
+import * as simpleMode from 'codemirror/addon/mode/simple';
+import js from 'codemirror/mode/clojure/clojure';
 import 'codemirror/lib/codemirror.css';
 import 'codemirror/theme/duotone-light.css';
 
@@ -19,10 +22,15 @@ semantics.addOperation('toAST', {
 	},
 	Line: rule => rule.toAST(),
 	Graph(soundAccessor, tilde, firstPolyBlock, pipe) {
+		let pipeAST = pipe.toAST();
+		// This set of pipes might not exist at all,
+		// in which case we want to default to an
+		// empty array so nothing fails.
+		pipeAST = (pipeAST && pipeAST[0]) || [];
 		return {
 			type: 'graph',
 			sound: soundAccessor.toAST(),
-			pipe: [firstPolyBlock.toAST(), ...pipe.toAST()[0]],
+			pipe: [firstPolyBlock.toAST(), ...pipeAST],
 		};
 	},
 	Pipe: (char, soundBlock) => soundBlock.toAST(),
@@ -85,43 +93,92 @@ semantics.addOperation('toAST', {
 			patterns: pattern.asIteration().toAST(),
 		};
 	},
-	// DrumPattern(p1, letters, p2) {
-	// 	return {
-	// 		type: 'DrumPattern',
-	// 		pattern: letters.sourceString,
-	// 	};
-	// },
-	// NotePattern(b1, notes, b2) {
-	// 	return {
-	// 		type: 'NotePattern',
-	// 		pattern: notes.asIteration().toAST(),
-	// 	};
-	// },
-	// TimePattern(b1, times, b2) {
-	// 	return {
-	// 		type: 'TimePattern',
-	// 		pattern: times.asIteration().toAST(),
-	// 	};
-	// },
 
-	float: (f) => {
-		console.log('Parsing float?', f.sourceString);
-		console.log('-- ', parseFloat(f.sourceString));
-		return parseFloat(f.sourceString)
+	list(lb, soundArguments, rb) {
+		return {
+			type: 'list',
+			arguments: soundArguments.asIteration().toAST(),
+		};
 	},
-	// float_dotStart: (d, f) => parseFloat('0.' + f.sourceString),
+
+	range_number(lb, arg1, __, arg2, rb) {
+		return {
+			type: 'list',
+			arguments: range(
+				parseInt(arg1.sourceString),
+				parseInt(arg2.sourceString)
+			),
+		};
+	},
+
+	range_note(lb, arg1, __, arg2, rb) {
+		return {
+			type: 'list',
+			arguments: Range.chromatic(
+				[arg1.sourceString, arg2.sourceString]
+			),
+		};
+	},
+
+	int: (neg, i) => neg.sourceString ? parseInt(i.sourceString) * -1 : parseInt(i.sourceString),
+	float: (f) => parseFloat(f.sourceString),
 	note: n => isNaN(n.sourceString) ? n.sourceString : +n.sourceString,
+	rhythm: (r, num, beat) => r.sourceString + num.sourceString + beat.sourceString,
+});
+
+/* Example definition of a simple mode that understands a subset of
+ * JavaScript:
+ */
+
+CodeMirror.defineSimpleMode("slang", {
+	start: [
+		{
+			regex: /(?:osc|filter|adsr|gain|pan|chord|random|rhythm|notes|length)\b/,
+			token: "keyword"
+		},
+		{
+			regex: /[a-g](\#|b)?\d+/i,
+			token: "note"
+		},
+		{
+			regex: /\d+(n|t)/i,
+			token: "beat"
+		},
+		{
+			regex: /r\d+(n|t)/i,
+			token: "rest"
+		},
+		{
+			regex: /0x[a-f\d]+|[-+]?(?:\.\d+|\d+\.?\d*)(?:e[-+]?\d+)?/i,
+			token: "number"
+		},
+		{
+			regex: /(\+|\~)/,
+			token: "pipe"
+		},
+		{
+			regex: /\#.+/,
+			token: "comment"
+		},
+		{
+			regex: /\@[a-z$][\w$]*/,
+			token: "variable"
+		},
+	],
 });
 
 
 const cm = CodeMirror(document.body, {
   value: "",
-  mode:  "javascript",
+  mode:  "slang",
   theme: 'duotone-light',
+  indentWithTabs: true,
 });
 
 cm.on('keydown', (c, e) => {
-	if (e.key === 'Enter' && e.metaKey) {
+	if (e.key === 'Enter' && e.metaKey && e.shiftKey) {
+		runtime.clearScene();
+	} else if (e.key === 'Enter' && e.metaKey) {
 		runScene(cm.getValue());
 	}
 });
@@ -168,7 +225,7 @@ function runScene(text) {
 			// This might fail, in which case it's
 			// on us to define what the experience
 			// of that failure is. This is a rabbit
-			// hole; for now let's just log it.
+			// hole; for now let's just throw it.
 			if (!match.succeeded()) throw new Error(match.message);
 			// Next we give that to the semantics tool
 			// that we imbued with the `toAST` operation.

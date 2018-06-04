@@ -7,16 +7,26 @@ Implement:
     ✔ the schedule fn could link together the blocks for each note triggered @done (18-05-31 20:00)
   ✘ variables @cancelled (18-06-01 16:24)
   ☐ more blocks
-  ☐ sharp notes
-  ☐ Lists
+    ✔ pan @done (18-06-03 08:39)
+    ✔ gain @done (18-06-03 08:40)
+  ✔ sharp notes @done (18-06-02 11:41)
+  ✔ Lists @done (18-06-02 11:41)
     ✔ step 1: discrete list as soundArgument @done (18-06-01 17:07)
     ✔ step 2: range as soundArgument @done (18-06-01 17:07)
     ✔ step 3: Function as sound argument @done (18-06-02 07:14)
-    ☐ step 4: List class
-      - the list should exist as data in the CST (not a fn)
-        - pros: clear data structure
-        - cons: why the heck are we making it harder on purpose
-  ☐ parse functions to make scheduler patterns
+    ✔ step 4: List/Function classes @done (18-06-02 11:41)
+      - a function can return a list which means...
+        - parse all soundArguments at runtime
+          - where are the soundArguments being used?
+            - blocks
+            - scheduler
+            - ...that's not so bad
+            - some parameters will interpret args as `.next`, others as arrays
+  ✔ parse functions to make scheduler patterns @done (18-06-02 08:12)
+  ☐ envelope causes problems with the chain
+    - osc needs to know what its end time will be, which the envelope defines via release
+    - filter needs to set the peakLevel of the env (otherwise it would work)
+    ☐ use a function call instead: `(envelope (osc [sin tri]) .1 0 1 .2)
 
 Design:
   ✔ clojure-style parens @done (18-06-01 16:38)
@@ -56,11 +66,12 @@ todos:
 @synth (osc tri) + (adsr) ~ (filter lp 5) ~ (delay 0.5 50)
 
 
-play @synth (rhythm xoxxoxoxoo) (notes [])
+play @synth (rhythm xoxxoxoxoo) (notes (chord majorblues E3))
 
+notes will cycle through each argument one after the other,
+and each argument can itself be a cycle! cycle is a good concept.
+  (notes [
+    [E3, D3]
+    [F3, A3, E3]
+  ])
 
-
-Update on my audio language: looking more like Clojure now! Lessons learned so far:
-- the data types should inform the syntax, not the other way around
-- stricter whitespace/delimiters make everything easier
-- don't define things in grammar if they can be interpreted at runtime
