@@ -52,8 +52,6 @@ function parseGraph(graph) {
 };
 
 function parsePlay(operation) {
-	console.log('parsePlay:', operation);
-
 	model.sounds[operation.sound.name].schedule(operation.patterns);
 }
 

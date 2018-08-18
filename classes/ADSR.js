@@ -63,11 +63,10 @@ class ADSR extends Block {
 		// either an oscillator (for calling `stop` on) or a node
 		// that we can connect to our gain.
 		const scheduleResult = this.block.schedule(start, stop, note, true);
-		console.log('scheduleResult', scheduleResult);
 
 		// I don't love this logic, but there are two very separate
 		// behaviors here depending on what the envelope applies to.
-		// Of it's an oscillator, the envelope's gain is part of the
+		// If it's an oscillator, the envelope's gain is part of the
 		// audio signal and we need to control the stop time.
 		// If it's any other block, we get a property passed back that
 		// our gain node applies to.

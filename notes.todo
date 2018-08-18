@@ -23,10 +23,13 @@ Implement:
             - ...that's not so bad
             - some parameters will interpret args as `.next`, others as arrays
   ✔ parse functions to make scheduler patterns @done (18-06-02 08:12)
-  ☐ envelope causes problems with the chain
-    - osc needs to know what its end time will be, which the envelope defines via release
-    - filter needs to set the peakLevel of the env (otherwise it would work)
-    ☐ use a function call instead: `(envelope (osc [sin tri]) .1 0 1 .2)
+  ✔ envelope causes problems with the chain @done (18-06-04 16:41)
+    ✔ osc needs to know what its end time will be, which the envelope defines via release @done (18-06-04 16:41)
+    ✘ filter needs to set the peakLevel of the env (otherwise it would work) @cancelled (18-06-16 08:17)
+    ✔ use a function call instead: `(envelope (osc [sin tri]) .1 0 1 .2) @done (18-06-04 16:41)
+  ✔ split environment into a different file `editor.js` @done (18-06-16 09:18)
+  ✔ save code in localstorage on run @done (18-06-16 09:18)
+  ✘ start/stop button? @cancelled (18-06-16 09:18)
 
 Design:
   ✔ clojure-style parens @done (18-06-01 16:38)

@@ -45,10 +45,8 @@ class Sound {
 	}
 
 	appendToGraph(graph) {
-		console.log('Sound::appendToGraph', graph);
 		// take additional graph info and append it
 		// to the current sound.
-
 		const nextConnectionKey = Object.keys(this.connections).length;
 		this.createGraph(graph.pipe, nextConnectionKey);
 		this.connectGraph(nextConnectionKey);
@@ -56,8 +54,6 @@ class Sound {
 		// Add to the debug graphs array in case
 		// we need to poke around.
 		this._graphs.push(graph);
-
-		console.log('-- created graph,', this.model);
 	}
 
 	createGraph(pipe, index) {
@@ -140,7 +136,6 @@ class Sound {
 		const scheduler = new Scheduler(patterns);
 
 		scheduler.tick((start, stop, note) => {
-			console.log('Scheduler::tick', start.toFixed(3), stop.toFixed(3), note);
 			Object.keys(this.model).forEach((id) => {
 				this.model[id].schedule(start, stop, note);
 			});

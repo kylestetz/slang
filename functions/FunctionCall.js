@@ -1,4 +1,3 @@
-import * as Scale from 'tonal-scale';
 import parseArguments from '../helpers/parseArguments';
 
 class FunctionCall {

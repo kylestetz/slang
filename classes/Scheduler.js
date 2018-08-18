@@ -2,9 +2,6 @@ import context from '../helpers/context';
 import { parseArgument, rhythmMap } from '../helpers/parseArguments';
 import List from '../helpers/List';
 
-const TEMPO = 120;
-// const DIVISION = 1 / (TEMPO * 1/60) / 2;
-
 export default class Scheduler {
 	constructor(patterns) {
 		// Start with defaults for
@@ -14,8 +11,6 @@ export default class Scheduler {
 		this.rhythmPattern = parseArgument('8n');
 		// a List of notes
 		this.notePattern = parseArgument(69);
-		// a List of note lengths
-		this.lengthPattern = parseArgument('8n');
 
 		// Store a callback to the Sound here.
 		this.tickCallback = null;
@@ -44,10 +39,6 @@ export default class Scheduler {
 					break;
 				case 'notes':
 					this.notePattern = parseArgument(pattern.arguments[0]);
-					console.log('notepattern:', this.notePattern);
-					break;
-				case 'length':
-					this.lengthPattern = parseArgument(pattern.arguments[0]);
 					break;
 				default:
 					break;
@@ -79,7 +70,6 @@ export default class Scheduler {
 				// We're only ticking on beats that aren't rests.
 				if (!rest) {
 					const nextNote = this.notePattern.next();
-					console.log(nextNote);
 					// schedule stuff!
 					this.tickCallback(
 						// start time

@@ -1,15 +1,9 @@
 import util from 'util';
 import ohm from 'ohm-js';
-import { range } from 'lodash';
+import range from 'lodash/range';
 import * as Range from 'tonal-range';
 import grammarDefinition from './slang-grammar';
 import runtime from './runtime';
-
-import CodeMirror from 'codemirror';
-import * as simpleMode from 'codemirror/addon/mode/simple';
-import js from 'codemirror/mode/clojure/clojure';
-import 'codemirror/lib/codemirror.css';
-import 'codemirror/theme/duotone-light.css';
 
 const grammar = ohm.grammar(grammarDefinition);
 const semantics = grammar.createSemantics();
@@ -126,64 +120,7 @@ semantics.addOperation('toAST', {
 	rhythm: (r, num, beat) => r.sourceString + num.sourceString + beat.sourceString,
 });
 
-/* Example definition of a simple mode that understands a subset of
- * JavaScript:
- */
-
-CodeMirror.defineSimpleMode("slang", {
-	start: [
-		{
-			regex: /(?:osc|filter|adsr|gain|pan|chord|random|rhythm|notes|length)\b/,
-			token: "keyword"
-		},
-		{
-			regex: /[a-g](\#|b)?\d+/i,
-			token: "note"
-		},
-		{
-			regex: /\d+(n|t)/i,
-			token: "beat"
-		},
-		{
-			regex: /r\d+(n|t)/i,
-			token: "rest"
-		},
-		{
-			regex: /0x[a-f\d]+|[-+]?(?:\.\d+|\d+\.?\d*)(?:e[-+]?\d+)?/i,
-			token: "number"
-		},
-		{
-			regex: /(\+|\~)/,
-			token: "pipe"
-		},
-		{
-			regex: /\#.+/,
-			token: "comment"
-		},
-		{
-			regex: /\@[a-z$][\w$]*/,
-			token: "variable"
-		},
-	],
-});
-
-
-const cm = CodeMirror(document.body, {
-  value: "",
-  mode:  "slang",
-  theme: 'duotone-light',
-  indentWithTabs: true,
-});
-
-cm.on('keydown', (c, e) => {
-	if (e.key === 'Enter' && e.metaKey && e.shiftKey) {
-		runtime.clearScene();
-	} else if (e.key === 'Enter' && e.metaKey) {
-		runScene(cm.getValue());
-	}
-});
-
-function runScene(text) {
+export function runScene(text) {
 	// The parser can handle one line at a time
 	// so we'll need to prepare an array with
 	// "lines of code" that can be parsed individually.
@@ -206,7 +143,11 @@ function runScene(text) {
 			if (thisLine.startsWith('\t') && lines.length) {
 				// Ohm doesn't consider tabs as whitespace,
 				// so let's trim the edges and use a space instead.
-				lines[lines.length - 1] += (' ' + thisLine.trim());
+				const padWithSpace = (
+					!lines[lines.length - 1].trim().endsWith('[')
+					&& !thisLine.trim().startsWith(']')
+				);
+				lines[lines.length - 1] += (padWithSpace ? ' ' : '') + thisLine.trim();
 			} else {
 				// This is a normal line. Add it to the array.
 				lines.push(thisLine);
@@ -242,11 +183,12 @@ function runScene(text) {
 	// but for now let's preemptively clear the scene.
 	runtime.clearScene();
 
-	console.log(parsedScene);
+	console.log('%cSucessfully parsed the scene:', 'color: green;', parsedScene);
 
 	// Start the show!
 	runtime.runScene(parsedScene);
 }
 
-
-
+export function clearScene() {
+	runtime.clearScene();
+}

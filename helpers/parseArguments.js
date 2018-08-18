@@ -2,7 +2,6 @@ import List from './List';
 import FunctionCall from '../functions';
 
 const TEMPO = 120;
-// this is an 8th note
 const DIVISION = (1 / 24) / (TEMPO / 60);
 
 export const rhythmMap = {
