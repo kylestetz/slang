@@ -167,6 +167,8 @@ Usage:
 
 Creates a delay effect. This should be part of a sound chain.
 
+_Warning: delay doesn't work very well right now and might cause some weird audio artifacts._
+
 `time`: A rhythm value or a number in seconds.
 
 `feedback`: A number from 0 - 1 representing the amount of feedback to apply.
@@ -296,7 +298,6 @@ A randomized synth & bassline with drums
 ```
 @synth (adsr (osc saw) 64n)
 	+ (filter lp (random [5..30]))
-	+ (delay 8n 0.7 0.5 1)
 	+ (gain 0.25)
 
 @bass (adsr (osc tri) 64n 2n 0.4 4n)
