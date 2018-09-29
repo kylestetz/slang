@@ -6,7 +6,7 @@ Implement:
     ✔ cool yeah that could be a class? @done (18-05-31 20:00)
     ✔ the schedule fn could link together the blocks for each note triggered @done (18-05-31 20:00)
   ✘ variables @cancelled (18-06-01 16:24)
-  ☐ more blocks
+  ✔ more blocks @done (18-09-29 11:49)
     ✔ pan @done (18-06-03 08:39)
     ✔ gain @done (18-06-03 08:40)
   ✔ sharp notes @done (18-06-02 11:41)
@@ -15,13 +15,6 @@ Implement:
     ✔ step 2: range as soundArgument @done (18-06-01 17:07)
     ✔ step 3: Function as sound argument @done (18-06-02 07:14)
     ✔ step 4: List/Function classes @done (18-06-02 11:41)
-      - a function can return a list which means...
-        - parse all soundArguments at runtime
-          - where are the soundArguments being used?
-            - blocks
-            - scheduler
-            - ...that's not so bad
-            - some parameters will interpret args as `.next`, others as arrays
   ✔ parse functions to make scheduler patterns @done (18-06-02 08:12)
   ✔ envelope causes problems with the chain @done (18-06-04 16:41)
     ✔ osc needs to know what its end time will be, which the envelope defines via release @done (18-06-04 16:41)
@@ -37,44 +30,19 @@ Design:
   ✔ lists and ranges @done (18-06-02 07:15)
     ✔ List class can hold a finite list or a range @done (18-06-02 07:14)
     ✔ lists won't be used outside of functions! I think @done (18-06-02 07:15)
-  ☐ could LFOs be functions with forward-pointing arguments?
-    - @synth ~ (lfo osc.frequency 2 100) ~ (osc tri) + (filter lp 8)
+  ✘ could LFOs be functions with forward-pointing arguments? @cancelled (18-09-29 11:49)
+    ✘ @synth ~ (lfo osc.frequency 2 100) ~ (osc tri) + (filter lp 8) @cancelled (18-09-29 11:49)
 
 
 todos:
-✔ get rid of commas as separators @done (18-06-02 07:15)
-- what are our data types?
-  - functions
-    - functions can accept any ol shit as arguments
-      - can they accept other function calls?
-  - lists
-    - ranges are a type of list
-    - List could be a class that has `.asArray` and `.next` methods on it
-      so that sequences could get counting/wrapping for free and blocks/fns
-      can choose how to interpret them
-  - numbers
-  - notes
-
-# functions
-  (osc sine)
-  (random [0..127])
-  (random (chord bebop E3))
-
-# lists
-  [64 75 86 52 62]
-# ranges
-  [E3..E4]
-  [0..127]
-
-@synth (osc tri) + (adsr) ~ (filter lp 5) ~ (delay 0.5 50)
+  ✔ get rid of commas as separators @done (18-06-02 07:15)
+  ☐ expose errors
+  ☐ play/pause button
+  ✔ drums @done (18-09-29 11:48)
+    ✔ @percussion (drums <set>) + (filter lp 10) @done (18-09-29 11:48)
+    ✔ play @percussion (rhythm [8n]) (notes [0 1 2 3 4 5]) @done (18-09-29 11:48)
+    ✔ lazy load when drum is first used? @done (18-09-29 11:48)
+    ✔ 0 - 11 for now, maybe mod% so that any number hits a sound @done (18-09-29 11:48)
 
 
-play @synth (rhythm xoxxoxoxoo) (notes (chord majorblues E3))
-
-notes will cycle through each argument one after the other,
-and each argument can itself be a cycle! cycle is a good concept.
-  (notes [
-    [E3, D3]
-    [F3, A3, E3]
-  ])
 
