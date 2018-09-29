@@ -36,8 +36,8 @@ Design:
 
 todos:
   ✔ get rid of commas as separators @done (18-06-02 07:15)
-  ☐ expose errors
-  ☐ play/pause button
+  ✔ expose errors @done (18-09-29 15:44)
+  ✔ play/pause button @done (18-09-29 15:44)
   ✔ drums @done (18-09-29 11:48)
     ✔ @percussion (drums <set>) + (filter lp 10) @done (18-09-29 11:48)
     ✔ play @percussion (rhythm [8n]) (notes [0 1 2 3 4 5]) @done (18-09-29 11:48)
