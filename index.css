@@ -33,8 +33,9 @@ body {
 	display: block;
 	width: 100%;
 	max-width: 628px;
+	max-height: 80px;
 	height: auto;
-	margin: 12px auto 36px auto;
+	margin: 12px auto 24px auto;
 }
 
 #error {
@@ -49,7 +50,7 @@ body {
 	transition: opacity 0.1s;
 	background-color: white;
 	border: 1px dashed #fc5e39;
-	color: #212121;
+	color: #fc5e39;
 	white-space: pre;
 	overflow-y: scroll;
 }
@@ -75,16 +76,6 @@ body {
 	cursor: pointer;
 }
 
-.overlay {
-	position: absolute;
-	top: 12px;
-	right: 12px;
-	z-index: 1;
-	font-size: 12px;
-	color: rgba(0, 0, 0, 0.25);
-	text-align: right;
-}
-
 footer {
 	position: relative;
 	top: 10px;
@@ -108,17 +99,21 @@ footer a:hover {
 
 #controls {
 	display: flex;
-	padding: 6px 0px;
-	border-bottom: 2px solid rgba(0, 0, 0, 0.25);
+	padding: 6px;
+	background-color: #eee7dd;
 }
 
 #controls > * {
-	flex: 0 0 33%;
+	flex: 0 0 33.33%;
 }
 
 .controls-center {
 	text-align: center;
 	color: rgba(0, 0, 0, 0.25);
+}
+
+.controls-right {
+	text-align: right;
 }
 
 .button {
@@ -129,10 +124,15 @@ footer a:hover {
 	background-color: #8dc154;
 	color: white;
 	cursor: pointer;
+	text-decoration: none;
 }
 
 .button.red {
 	background-color: #fb5e39;
+}
+
+.button.gray {
+	background-color: gray;
 }
 
 /*

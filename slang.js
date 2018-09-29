@@ -159,16 +159,30 @@ export function runScene(text) {
 	// Now that we have the definitive set of code lines,
 	// let's parse them!
 	const parsedScene = sceneLines
-		.map(s => {
+		.map((s, i) => {
 			// First we call grammar.match, which
 			// returns a structured Ohm MatchObject.
 			const match = grammar.match(s);
 			// This might fail, in which case it's
 			// on us to define what the experience
 			// of that failure is. This is a rabbit
-			// hole; for now let's just throw it.
+			// hole; for now let's just throw it and
+			// put it on the screen.
 			if (!match.succeeded()) {
-				throw new Error(match.message);
+				// These errors are not going to have
+				// the correct line numbers because
+				// of the pre-processing step above
+				// that trimmed and concatenated lines
+				// that start with tabs + whitespace.
+				// This is what source maps are for!
+				// Those seem complicated so instead
+				// let's be marginally helpful by
+				// referencing which "command" it is.
+				throw new Error(
+					String(match.message)
+						.replace('Line 1', `Command ${i}`)
+						.replace('> 1 | ', '>     ')
+				);
 			}
 			// Next we give that to the semantics tool
 			// that we imbued with the `toAST` operation.
@@ -185,7 +199,7 @@ export function runScene(text) {
 	// but for now let's preemptively clear the scene.
 	runtime.clearScene();
 
-	console.log('%cSucessfully parsed the scene:', 'color: green;', parsedScene);
+	console.log('%cRunning scene! Parsed syntax tree:', 'color: green;', parsedScene);
 
 	// Start the show!
 	runtime.runScene(parsedScene);
