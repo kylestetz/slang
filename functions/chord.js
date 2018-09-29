@@ -7,7 +7,7 @@ import { parseArgument } from '../helpers/parseArguments';
 // For now let's strip the spaces out of the chord names
 // to simplify the arguments to the (chord ...) function.
 const scaleNamesMap = Scale.names().reduce((ob, name) => {
-	ob[name.replace(/ /g, '')] = name;
+	ob[name.replace(/( |\#)/g, '')] = name;
 	return ob;
 }, {});
 
