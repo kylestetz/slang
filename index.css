@@ -1,0 +1,169 @@
+* {
+	box-sizing: border-box;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+body, html {
+	height: 100%;
+	margin: 0;
+}
+
+body {
+	display: flex;
+	flex-direction: column;
+	padding: 24px;
+	font-family: 'Roboto Mono';
+}
+
+#editor {
+	position: relative;
+	flex: 1 0 auto;
+	display: flex;
+	flex-direction: column;
+}
+
+/* The top flex column that holds the SVG and the error box */
+.banner {
+	position: relative;
+}
+
+#svg-title {
+	flex: 0 0 auto;
+	display: block;
+	width: 100%;
+	max-width: 628px;
+	height: auto;
+	margin: 12px auto 36px auto;
+}
+
+#error {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	padding: 12px;
+	height: 100%;
+	pointer-events: none;
+	opacity: 0;
+	transition: opacity 0.1s;
+	background-color: white;
+	border: 1px dashed #fc5e39;
+	color: #212121;
+	white-space: pre;
+	overflow-y: scroll;
+}
+
+#error.show {
+	opacity: 1;
+	pointer-events: auto;
+}
+
+#error-content {
+	position: absolute;
+	top: 12px;
+	left: 12px;
+	right: 24px;
+}
+
+#dismiss {
+	position: absolute;
+	top: 12px;
+	right: 12px;
+	line-height: 10px;
+	font-size: 20px;
+	cursor: pointer;
+}
+
+.overlay {
+	position: absolute;
+	top: 12px;
+	right: 12px;
+	z-index: 1;
+	font-size: 12px;
+	color: rgba(0, 0, 0, 0.25);
+	text-align: right;
+}
+
+footer {
+	position: relative;
+	top: 10px;
+	font-size: 12px;
+	text-align: center;
+	color: #28bed4;
+}
+
+footer a {
+	text-decoration: none;
+	color: #28bed4;
+}
+
+footer a:hover {
+	text-decoration: underline;
+}
+
+/*
+--------------------------------- CONTROLS --------------------------------
+*/
+
+#controls {
+	display: flex;
+	padding: 6px 0px;
+	border-bottom: 2px solid rgba(0, 0, 0, 0.25);
+}
+
+#controls > * {
+	flex: 0 0 33%;
+}
+
+.controls-center {
+	text-align: center;
+	color: rgba(0, 0, 0, 0.25);
+}
+
+.button {
+	display: inline-block;
+	padding: 2px 6px;
+	border-radius: 2px;
+	line-height: 22px;
+	background-color: #8dc154;
+	color: white;
+	cursor: pointer;
+}
+
+.button.red {
+	background-color: #fb5e39;
+}
+
+/*
+--------------------------------- EDITOR ---------------------------------
+*/
+
+.CodeMirror {
+	flex: 1 0 auto;
+	padding: 12px;
+	font-size: 18px;
+	font-family: 'Roboto Mono' !important;
+}
+
+.cm-note {
+	color: #8BC34A;
+}
+.cm-variable {
+	color: #FF5722 !important;
+}
+.cm-number {
+	color: #00BCD4 !important;
+}
+.cm-pipe {
+	color: #9c27b0;
+}
+.cm-comment {
+	color: #d3ccbb !important;
+}
+.cm-beat {
+	color: #ff9800;
+}
+.cm-rest {
+	color: #ff980085;
+}

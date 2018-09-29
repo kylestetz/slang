@@ -167,7 +167,9 @@ export function runScene(text) {
 			// on us to define what the experience
 			// of that failure is. This is a rabbit
 			// hole; for now let's just throw it.
-			if (!match.succeeded()) throw new Error(match.message);
+			if (!match.succeeded()) {
+				throw new Error(match.message);
+			}
 			// Next we give that to the semantics tool
 			// that we imbued with the `toAST` operation.
 			// That will turn our parsed grammar into a
