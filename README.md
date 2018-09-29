@@ -298,7 +298,12 @@ A randomized synth & bassline with drums
 ```
 @synth (adsr (osc saw) 64n)
 	+ (filter lp (random [5..30]))
-	+ (gain 0.25)
+	+ (gain 0.2)
+	+ (pan -0.75)
+@synth (adsr (osc square 12) 64n)
+	+ (filter lp 15)
+	+ (gain 0.15)
+	+ (pan 0.75)
 
 @bass (adsr (osc tri) 64n 2n 0.4 4n)
 
