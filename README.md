@@ -12,6 +12,8 @@
 
 Slang was created to explore implementing a programming language entirely in the browser. Parsing is handled by [Ohm.js](https://github.com/harc/ohm) using a [custom grammar](./slang-grammar.js), the editor uses CodeMirror with a simple syntax definition, and the runtime itself is written in JS using the Web Audio API.
 
+<img src="./screenshot.jpg" />
+
 ### Goals of this project
 
 I've always wanted to write a programming language from scratch, but as someone who didn't study computer science I find it incredibly intimidating. Discovering [Ohm.js](https://github.com/harc/ohm) changed my mind; its incredible editor and approachable JS API make it possible to experiment quickly with a lot of feedback. This project is my first pass at building a language and runtime environment from start to finish.
