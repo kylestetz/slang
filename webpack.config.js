@@ -5,7 +5,7 @@ module.exports = {
   entry: './editor.js',
   output: {
     filename: 'site.js',
-    path: path.resolve(__dirname, 'build')
+    path: path.resolve(__dirname, 'public/build')
   },
   module: {
     rules: [{
