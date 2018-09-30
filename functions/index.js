@@ -3,6 +3,8 @@ import Chord from './chord';
 import Repeat from './repeat';
 import Flatten from './flatten';
 import Reverse from './reverse';
+import Shuffle from './shuffle';
+import Transpose from './transpose';
 
 export const functionMap = {
 	'random': Random,
@@ -10,6 +12,8 @@ export const functionMap = {
 	'repeat': Repeat,
 	'flatten': Flatten,
 	'reverse': Reverse,
+	'shuffle': Shuffle,
+	'transpose': Transpose,
 };
 
 export default function(functionObject) {
