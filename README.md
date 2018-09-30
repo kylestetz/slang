@@ -108,7 +108,7 @@ In Slang every argument can be either a static value (such as `8n`, `e3`, `1`, e
 
 ## Sound Functions
 
-#### `(osc <type: sine> <pitchOffset: 0>)`
+#### Oscillator - `(osc <type: sine> <pitchOffset: 0>)`
 
 Creates an oscillator with an optional pitchOffset in semitones. Filters and effects can be chained off of the oscillator using the `+` sign.
 
@@ -130,7 +130,7 @@ Usage:
 @melody (osc (random [sine saw tri square]))
 ```
 
-#### `(drums)`
+#### Drums - `(drums)`
 
 Creates a drum machine. It does not accept any arguments.
 
@@ -138,7 +138,7 @@ When writing a play line, the notes 0 - 11 represent the 12 drum sounds.
 
 _Pro tip_: Any number above 11 will wrap around using modulus, so for example 25 will trigger sound 1 since `25 % 12 == 1`. This allows you to pass in note values (e.g. `e3`) as well since they correspond to number values.
 
-#### `(adsr <osc> <attack: 0.05> <decay: 0> <sustain: 1> <release: 0.05>)`
+#### Amp Envelope - `(adsr <osc> <attack: 0.05> <decay: 0> <sustain: 1> <release: 0.05>)`
 
 Creates an amp envelope which contains an oscillator followed by ADSR values. The attack, decay, and release arguments can be numbers or rhythm values (e.g. `8n`, `8t`, `4n`, etc.). Sustain is a number from 0 - 1.
 
@@ -148,7 +148,7 @@ Usage:
 @synth (adsr (osc sine) 8n 8n 0.5 4n)
 ```
 
-#### `+ (filter <type: lp> <frequency: 100> <resonance: 1>)`
+#### Filter - `+ (filter <type: lp> <frequency: 100> <resonance: 1>)`
 
 Creates a filter. This should be chained off of a oscillator or envelope.
 
@@ -172,7 +172,7 @@ Usage:
 @melody (osc saw) + (filter lp [10..50])
 ```
 
-#### `+ (gain <value>)`
+#### Gain - `+ (gain <value>)`
 
 Creates a gain (volume). This should be part of a sound chain.
 
@@ -184,7 +184,7 @@ Usage:
 @melody (osc sine) + (gain [0 0.25 0.5 0.75 1])
 ```
 
-#### `+ (pan <value>)`
+#### Pan - `+ (pan <value>)`
 
 Creates a stereo panner. This should be part of a sound chain.
 
@@ -196,7 +196,7 @@ Usage:
 @synth (osc sine 12) + (pan 1)
 ```
 
-#### `+ (delay <time: 8n> <feedback: 0.1> <wet: 0.5> <dry: 0.5> <cutoff: 11025>)`
+#### Delay - `+ (delay <time: 8n> <feedback: 0.1> <wet: 0.5> <dry: 0.5> <cutoff: 11025>)`
 
 Creates a delay effect. This should be part of a sound chain.
 
@@ -221,7 +221,7 @@ Creates
 
 ## Utility Functions
 
-#### `(chord <type> <root> <length>)`
+#### Chord - `(chord <type> <root> <length>)`
 
 Returns a list of notes belonging to a chord.
 
@@ -237,7 +237,7 @@ Usage:
 play @synth (notes (chord phrygian e3))
 ```
 
-#### `(random <list>)`
+#### Random - `(random <list>)`
 
 Selects a random item from the list each time it is called. The list can be a range such as `[1..10]` or the output of any other utility function, such as `chord` or `flatten`.
 
@@ -250,7 +250,7 @@ play @synth
 	(notes (random (chord phrygian e3)))
 ```
 
-#### `(flatten <list>)`
+#### Flatten - `(flatten <list>)`
 
 Takes a list of lists and flattens it.
 
@@ -270,7 +270,7 @@ play @synth (notes (flatten [
 	]))
 ```
 
-#### `(repeat <amount> <list>)`
+#### Repeat - `(repeat <amount> <list>)`
 
 Takes a list and repeats it `amount` times. Useful when used inside of `flatten`.
 
@@ -283,7 +283,7 @@ play @perc (notes (flatten [
 	]))
 ```
 
-#### `(reverse <list>)`
+#### Reverse - `(reverse <list>)`
 
 Reverses the list.
 
