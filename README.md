@@ -142,6 +142,8 @@ _Pro tip_: Any number above 11 will wrap around using modulus, so for example 25
 
 Creates an amp envelope which contains an oscillator followed by ADSR values. The attack, decay, and release arguments can be numbers or rhythm values (e.g. `8n`, `8t`, `4n`, etc.). Sustain is a number from 0 - 1.
 
+Since amp envelopes contain oscillators they can kick off a chain of sound.
+
 Usage:
 ```
 # Creates a sine wave oscillator with an amp envelope.
@@ -150,7 +152,7 @@ Usage:
 
 #### Filter - `+ (filter <type: lp> <frequency: 100> <resonance: 1>)`
 
-Creates a filter. This should be chained off of a oscillator or envelope.
+Creates a filter. This should be part of a sound chain.
 
 `type`:
 - `lp` (lowpass)
