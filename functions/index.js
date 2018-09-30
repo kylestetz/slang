@@ -5,6 +5,7 @@ import Flatten from './flatten';
 import Reverse from './reverse';
 import Shuffle from './shuffle';
 import Transpose from './transpose';
+import Interpolate from './interpolate';
 
 export const functionMap = {
 	'random': Random,
@@ -14,6 +15,7 @@ export const functionMap = {
 	'reverse': Reverse,
 	'shuffle': Shuffle,
 	'transpose': Transpose,
+	'lerp': Interpolate,
 };
 
 export default function(functionObject) {

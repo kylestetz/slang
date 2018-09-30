@@ -243,6 +243,8 @@ play @synth (notes (chord phrygian e3))
 
 Selects a random item from the list each time it is called. The list can be a range such as `[1..10]` or the output of any other utility function, such as `chord` or `flatten`.
 
+To get repeating random values, check out `shuffle` below.
+
 Usage:
 ```
 @synth (adsr (osc (random [saw tri])) 64n)
@@ -294,6 +296,51 @@ Usage:
 @synth (adsr (osc sine) 64n) + (gain 0.5)
 play @synth (notes (reverse (chord lydian e4)))
 play @synth (notes (chord lydian e5))
+```
+
+#### Shuffle - `(shuffle <list>)`
+
+Does a one-time random shuffle of the list. Use this if you want a random but repeating sequence, and use `random` if you want a random value each time the function is triggered.
+
+Usage:
+```
+@bass (adsr (osc tri) 64n)
+
+play @bass (notes (shuffle (chord phrygian e3)))
+```
+
+#### Transpose - `(transpose <amount> <list>)`
+
+Transpose a list of numbers or notes by an amount.
+
+`amount`: number
+
+Usage
+```
+@synth (adsr (osc tri) 64n)
+
+play @synth (notes (flatten [
+	(chord phrygian e3)
+	(transpose 2 (chord phrygian e3))
+	]))
+```
+
+#### Interpolate - `(lerp <start> <end> <steps>)`
+
+Generate a list that interpolates from the start to the end value over a number of steps. Useful for creating values that transition slowly over time, especially for tools like `pan` and `gain`.
+
+`start`: number
+
+`end`: number
+
+`steps`: number
+
+Usage:
+```
+@synth (adsr (osc tri) 64n)
+	+ (pan (lerp -1 1 16))
+
+play @synth (notes (chord major d4 16))
 ```
 
 ---
