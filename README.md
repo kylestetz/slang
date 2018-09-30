@@ -12,9 +12,9 @@ Slang was created to explore implementing a programming language entirely in the
 
 ### Goals of this project
 
-I have always wanted to write a programming language from scratch, but as someone who didn't study computer science I find it incredibly intimidating. Discovering [Ohm.js](https://github.com/harc/ohm) changed my mind; its incredible editor and approachable JS API make it possible to experiment quickly with a lot of feedback. This project is my first pass at build a language and runtime environment from start to finish.
+I've always wanted to write a programming language from scratch, but as someone who didn't study computer science I find it incredibly intimidating. Discovering [Ohm.js](https://github.com/harc/ohm) changed my mind; its incredible editor and approachable JS API make it possible to experiment quickly with a lot of feedback. This project is my first pass at building a language and runtime environment from start to finish.
 
-This is not meant to be a great or comprehensive language itself, but I do hope this project can serve as a roadmap if you'd like to build your own!
+This is not meant to be a great or comprehensive language, but I do hope this project can serve as a roadmap if you'd like to build your own!
 
 You'll notice a distinct lack of in-context error handling, inline docs, helpful UI, etc. Creating a great editor experience was not a goal of this project and it would take a lot of work to get there. I did my best to make it pleasant to use.
 
@@ -22,11 +22,38 @@ You'll notice a distinct lack of in-context error handling, inline docs, helpful
 
 Slang consists of **sound lines** and **play lines**. Sound lines build up a synthesizer (or drum machine), then play lines tell those synthesizers or drum machines what to play.
 
+```
+@synth (adsr (osc tri) 64n 8n 0.5 8n)
+
+play @synth
+	(rhythm [8n])
+	(notes [c3 d3 e3 f3 g3 a3 b3 c4])
+```
+
 It turns out that explaining your own programming language is ridiculously hard, so I suggest skipping to the **Examples** section below and trying those out before reading all of these docs.
 
 ## Sound Lines
 
-A sound establishes a variable (which always starts with `@`) that contains a **chain of sounds**.
+A sound line establishes a variable (which always starts with `@`) that contains a **chain of sounds**. Sounds always start with either an `(osc)` or `(drums)` but can chain tools like `filter`, `pan`, and `gain` together using the `+` operator.
+
+Here we have a sine oscillator which gets piped into a lowpass filter and then gain.
+```
+@synth (osc sine)
+	+ (filter lp 100)
+	+ (gain 0.5)
+```
+
+You can add multiple sound lines for the same variable; when a note is played all of its corresponding chains of sound will trigger.
+
+Here's a sound that has two oscillators, the second one pitched up an octave. When the sound plays you'll hear both oscillators firing for each note.
+```
+@synth (osc sine)
+@synth (osc sine 12)
+
+play @synth (notes [e3])
+```
+
+💡 Try making multiple chains for your synth and panning them left and right to create stereo synths.
 
 ## Play Lines
 
@@ -65,9 +92,13 @@ play @synth
 	]))
 ```
 
+💡 Try making multiple play lines for the same sound to make polyphonic melodies and drum beats.
+
 ## Syntax
 
 Functions are contained within parentheses, much like in Clojure. The first keyword in a function is the **functio name**, which is followed by all of its arguments. Any argument can be a primitive value or a list (neat!); if it's a list, Slang will take one value at a time and loop back to the beginning when it reaches the end. Check out the Reference section for lots of usage examples.
+
+---
 
 # Reference
 
@@ -167,7 +198,7 @@ Usage:
 
 Creates a delay effect. This should be part of a sound chain.
 
-_Warning: delay doesn't work very well right now and might cause some weird audio artifacts._
+_Warning: delay doesn't work very well right now and might cause some weird audio artifacts!_
 
 `time`: A rhythm value or a number in seconds.
 
@@ -323,4 +354,47 @@ play @drums
 play @drums
 	(rhythm [4n 4n 4n r8t 8t 8t])
 	(notes [0 3 0 11 11])
+```
+
+Weird and complex little scene (I think this is in 18/8 + 17/8 ??)
+```
+@synth (adsr (osc tri) 0.01 8n 0.2 1n)
+	+ (filter lp (flatten [[5..30] [29..5]]) 10)
+@synth (adsr (osc square 12) 0.01 8t 0.2 4n)
+	+ (filter lp (flatten [[0..25] [24..0]]))
+@synth (adsr (osc square 7) 0 8n 0 0)
+	+ (filter lp (random [10..25]))
+	+ (gain 0.2)
+
+@pad (adsr (osc tri) 4n 4n 0.5 1n)
+	+ (filter lp 10)
+	+ (gain 0.5)
+@pad (adsr (osc square [7 5]) 4n 4n 0.5 1n)
+	+ (filter lp 5)
+	+ (gain 0.5)
+@pad (adsr (osc saw [7 5 7 9]) 1n 4n 0.5 1n)
+	+ (filter hp 10)
+	+ (filter lp 100)
+	+ (gain 0.1)
+
+@drums (drums)
+
+play @synth
+	(rhythm [8t r8n 4n r8n 8t r8n 8t r8n])
+	(notes (flatten [
+		[[e2 g2] [d2 f2]]
+		(repeat 3 (chord locrian e4 3))
+		(reverse (chord egyptian e4 3))
+	]))
+
+play @pad
+	(notes [d4])
+	(rhythm [1n r1n r1n r4n r4n])
+
+play @drums
+	(rhythm [8t 8n 4n 8n 8t 8n 8t 8n])
+	(notes [7 6])
+play @drums
+	(rhythm [8t 8n 4n r4n r8n r8t r8t])
+	(notes [4 3 1])
 ```
