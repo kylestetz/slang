@@ -32,7 +32,7 @@ play @synth
 	(notes [c3 d3 e3 f3 g3 a3 b3 c4])
 ```
 
-It turns out that explaining your own programming language is ridiculously hard, so I suggest skipping to the **Examples** section below and trying those out before reading all of these docs.
+It turns out that explaining your own programming language is ridiculously hard, so I suggest skipping to the [**Examples**](https://github.com/kylestetz/slang#examples) section below and trying those out before reading all of these docs.
 
 ## Sound Lines
 
