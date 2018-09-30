@@ -1,12 +1,12 @@
 <img
 	align="center"
-	src="https://github.com/kylestetz/slang/logo.png"
+	src="./logo.png"
 	width="468"
 />
 
 # Slang — An audio programming language built in JS
 
-[Play with Slang](http://slang.kylestetz.com)
+<p align="center">[Play with Slang](http://slang.kylestetz.com)</p>
 
 Slang was created to explore implementing a programming language entirely in the browser. Parsing is handled by [Ohm.js](https://github.com/harc/ohm) using a [custom grammar](./slang-grammar.js), the editor uses CodeMirror with a simple syntax definition, and the runtime itself is written in JS using the Web Audio API.
 
