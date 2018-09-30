@@ -34,7 +34,7 @@ It turns out that explaining your own programming language is ridiculously hard,
 
 ## Sound Lines
 
-A sound line establishes a variable (which always starts with `@`) that contains a **chain of sounds**. Sounds always start with either an `(osc)` or `(drums)` but can chain tools like `filter`, `pan`, and `gain` together using the `+` operator.
+A sound line establishes a variable (which always starts with `@`) that contains a **chain of sounds**. Sounds always start with either an `(osc)` or `(drums)` and can chain tools like `filter`, `pan`, and `gain` together using the `+` operator.
 
 Here we have a sine oscillator which gets piped into a lowpass filter and then gain.
 ```
