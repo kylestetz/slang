@@ -5,6 +5,8 @@ const TEMPO = 120;
 const DIVISION = (1 / 24) / (TEMPO / 60);
 
 export const rhythmMap = {
+	'64t': DIVISION,
+	'64n': DIVISION * 1.5,
 	'32t': DIVISION * 2,
 	'32n': DIVISION * 3,
 	'16t': DIVISION * 4,
