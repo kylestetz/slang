@@ -53,9 +53,22 @@ CodeMirror.defineSimpleMode("slang", {
 });
 
 const existingCode = window.localStorage.getItem('code');
+const defaultCode = `# Welcome to Slang! Here's an example to get you started.
+# Click the Run button above to start playing this code.
+
+# Make a sound called @synth with a triangle wave
+@synth (adsr (osc tri) 64n 8n 0.5 8n)
+
+# Play the @synth sound
+play @synth
+	# play a quarter note and then an eighth note
+	(rhythm [4n 8n])
+	# play a C major scale
+	(notes [c3 d3 e3 f3 g3 a3 b3 c4])
+`;
 
 const editor = CodeMirror(document.querySelector('#editor'), {
-	value: existingCode || '',
+	value: existingCode || defaultCode,
 	mode:  'slang',
 	theme: 'duotone-light',
 	indentWithTabs: true,
