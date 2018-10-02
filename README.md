@@ -140,7 +140,7 @@ When writing a play line, the notes 0 - 11 represent the 12 drum sounds.
 
 _Pro tip_: Any number above 11 will wrap around using modulus, so for example 25 will trigger sound 1 since `25 % 12 == 1`. This allows you to pass in note values (e.g. `e3`) as well since they correspond to number values.
 
-#### Amp Envelope - `(adsr <osc> <attack: 0.05> <decay: 0> <sustain: 1> <release: 0.05>)`
+#### Amp Envelope - `(adsr <osc> <attack: 0.01> <decay: 0> <sustain: 1> <release: 0.05>)`
 
 Creates an amp envelope which contains an oscillator followed by ADSR values. The attack, decay, and release arguments can be numbers or rhythm values (e.g. `8n`, `8t`, `4n`, etc.). Sustain is a number from 0 - 1.
 

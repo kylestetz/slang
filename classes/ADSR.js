@@ -32,7 +32,7 @@ class ADSR extends Block {
 		this.block.instantiate();
 		this.blockType = block.function;
 
-		this.attack = this.arguments[0] || parseArgument(0.05);
+		this.attack = this.arguments[0] || parseArgument(0.01);
 		this.decay = this.arguments[1] || parseArgument(0);
 		this.sustain = this.arguments[2] || parseArgument(1);
 		this.release = this.arguments[3] || parseArgument(0.05);
