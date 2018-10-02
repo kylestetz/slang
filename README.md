@@ -347,7 +347,7 @@ play @synth (notes (chord major d4 16))
 
 ---
 
-Primite values:
+Primitive values:
 - **numbers** - integers and floats (`0`, `0.25`, `10000`, etc.)
 - **lists** (space-separated) - `[0 1 2 3 4 5 6]`
 - **notes** - `e3`, `d#4`, `f2`, etc.
