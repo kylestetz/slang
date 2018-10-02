@@ -138,7 +138,16 @@ export function runScene(text) {
 		//    by appending tab-prefixed
 		//    lines onto their predecessor.
 		.reduce((lines, thisLine, i) => {
+			// If this line is only whitespace and a comment,
+			// let's return early and ignore it here. This will
+			// allow us to support multi-line calls with comments
+			// interspersed.
+			if (thisLine.trim().charAt(0) === '#') {
+				return lines;
+			}
+
 			// If the line starts with a tab
+			// and it's also not a comment
 			// add the contents onto the last line.
 			if (thisLine.startsWith('\t') && lines.length) {
 				// Ohm doesn't consider tabs as whitespace,
