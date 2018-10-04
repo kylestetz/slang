@@ -59,7 +59,7 @@ const existingCode = window.localStorage.getItem('code');
 const defaultCode = `# Welcome to Slang! Here's an example to get you started.
 # Click the Run button above to start playing this code.
 
-tempo 200
+TEMPO 200
 
 # Make a sound called @synth with a triangle wave
 @synth (adsr (osc tri) 64n 8n 0.5 8n)

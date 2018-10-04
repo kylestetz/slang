@@ -1,5 +1,6 @@
 import Sound from './classes/Sound';
 import context from './helpers/context';
+import { changeTempo } from './helpers/parseArguments.js';
 
 const model = {
 	sounds: {},
@@ -16,6 +17,9 @@ function runScene(scene) {
 				break;
 			case 'play':
 				parsePlay(operation);
+				break;
+			case 'tempo':
+				parseTempo(operation);
 				break;
 		}
 	});
@@ -53,6 +57,11 @@ function parseGraph(graph) {
 
 function parsePlay(operation) {
 	model.sounds[operation.sound.name].schedule(operation.patterns);
+}
+
+function parseTempo(operation) {
+	console.log(operation);
+	changeTempo(operation.value);
 }
 
 function clearScene() {

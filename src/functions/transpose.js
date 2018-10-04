@@ -15,6 +15,8 @@ export default class Transpose extends FunctionCall {
 		this.hasWarned = false;
 	}
 	next(passedValue) {
+		const rhythmMapObj = rhythmMap();
+		console.log(rhythmMapObj);
 		let nextValue = passedValue || this.data.next();
 
 		// Unfortunately transposing rhythms won't work
@@ -30,7 +32,7 @@ export default class Transpose extends FunctionCall {
 			typeof nextValue === 'string'
 			&& (
 				nextValue.charAt(0).toLowerCase() === 'r'
-				|| rhythmMap[nextValue]
+				|| rhythmMapObj[nextValue]
 			)
 		) {
 			if (!this.hasWarned) {

@@ -90,7 +90,7 @@ semantics.addOperation('toAST', {
 	Tempo(kw, value) {
 		return {
 			type: 'tempo',
-			value,
+			value: value.toAST()
 		};
 	},
 

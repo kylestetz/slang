@@ -73,8 +73,8 @@ Sound {
     the sound beats per minute.
   */
 
-  Tempo = TempoKeyword tempoPrim
-  TempoKeyword = "tempo" | "[]"
+  Tempo = TempoKeyword int
+  TempoKeyword = "TEMPO" | "|"
 
   /*
     PLAY LINES
@@ -116,7 +116,6 @@ Sound {
     | "-"? digit+ -- int
   
   int = "-"? digit+
-  tempoPrim = digit+
 
   note = letter "#" digit+ -- sharp
     | letter "b" digit+ -- flat

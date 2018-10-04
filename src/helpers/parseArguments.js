@@ -1,23 +1,25 @@
 import List from './List';
 import FunctionCall from '../functions';
 
-const TEMPO = 120;
-const DIVISION = (1 / 24) / (TEMPO / 60);
+let TEMPO = 120;
 
-export const rhythmMap = {
-	'64t': DIVISION,
-	'64n': DIVISION * 1.5,
-	'32t': DIVISION * 2,
-	'32n': DIVISION * 3,
-	'16t': DIVISION * 4,
-	'16n': DIVISION * 6,
-	'8t': DIVISION * 8,
-	'8n': DIVISION * 12,
-	'4t': DIVISION * 16,
-	'4n':DIVISION * 24,
-	'2t': DIVISION * 32,
-	'2n': DIVISION * 48,
-	'1n': DIVISION * 96,
+export function rhythmMap () {
+	const DIVISION = (1 / 24) / (TEMPO / 60);
+	return {
+		'64t': DIVISION,
+		'64n': DIVISION * 1.5,
+		'32t': DIVISION * 2,
+		'32n': DIVISION * 3,
+		'16t': DIVISION * 4,
+		'16n': DIVISION * 6,
+		'8t': DIVISION * 8,
+		'8n': DIVISION * 12,
+		'4t': DIVISION * 16,
+		'4n': DIVISION * 24,
+		'2t': DIVISION * 32,
+		'2n': DIVISION * 48,
+		'1n': DIVISION * 96,
+	};
 }
 
 /*
@@ -52,10 +54,17 @@ export function parseArgument(arg) {
 
 	return null;
 }
+export function changeTempo(tempo) {
+	let min = 30;
+	let max = 500;
+	const newTempo = Math.max(Math.min(tempo, max), min);
+	TEMPO = isNaN(newTempo) ? TEMPO : newTempo;
+}
 
 function createArgumentFromStaticValue(value) {
+	const rhythmMapObj = rhythmMap()
 	// convert rhythms into numbers if we catch one
 	return {
-		next: () => rhythmMap[value] || value,
+		next: () => rhythmMapObj[value] || value,
 	};
 }

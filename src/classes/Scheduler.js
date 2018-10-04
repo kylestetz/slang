@@ -55,6 +55,7 @@ export default class Scheduler {
 		this.currentTime = timestamp;
 
 		this.interval = setInterval(() => {
+			const rhythmMapObj = rhythmMap()
 			while (this.currentTime < context.currentTime + this.lookahead) {
 				// The tick length could be a number or a string that starts
 				// with 'r', indicating a rest.
@@ -65,7 +66,7 @@ export default class Scheduler {
 				if (typeof nextTickLength === 'string' && nextTickLength.charAt(0).toLowerCase() === 'r') {
 					rest = true;
 					// Convert it into the appropriate rhythm.
-					nextTickLength = rhythmMap[nextTickLength.substr(1)];
+					nextTickLength = rhythmMapObj[nextTickLength.substr(1)];
 				}
 				// We're only ticking on beats that aren't rests.
 				if (!rest) {
