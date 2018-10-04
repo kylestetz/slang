@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "prestart": "npm run lint",
-    "start": "echo 'STARTING' && npm run dev:lib && npm run dev:server",
+    "start": "echo 'STARTING' && npm run dev:webpack && npm run dev:server",
     "dev:webpack": "webpack --config packing/webpack.config.js --progress --hide-modules",
     "dev:server": "node packing/server.js",
     "lint": "echo 'LINTING' && eslint --ext .js src packing && echo 'Syntax is ok...'",
