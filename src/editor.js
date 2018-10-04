@@ -18,8 +18,6 @@ import './static/css/editor.css';
 const keywords = Object.keys(classMap).concat(Object.keys(functionMap), ['notes', 'rhythm']);
 const keywordRegex = new RegExp(`(?:${keywords.join('|')})\\b`);
 
-console.log(logo);
-
 CodeMirror.defineSimpleMode("slang", {
 	start: [
 		{
