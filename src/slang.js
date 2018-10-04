@@ -1,7 +1,7 @@
 import ohm from 'ohm-js';
 import range from 'lodash/range';
 import * as Range from 'tonal-range';
-import grammarDefinition from './slang-grammar';
+import grammarDefinition from './slang.ohm';
 import runtime from './runtime';
 
 const grammar = ohm.grammar(grammarDefinition);

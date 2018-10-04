@@ -31,6 +31,10 @@ module.exports = {
           }
         },
         {
+          test: /\.ohm$/,
+          use: ['raw-loader']
+        },
+        {
           test: /\.css$/,
           use: [
             {
