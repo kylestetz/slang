@@ -117,6 +117,7 @@ Numbers: 64  65  66  67  68  69  70  71  72  73  74  75  76
 Here are all of the values and how they line up, from slowest to fastest:
 - `1n` - whole note (the longest note)
 - `2n` - half note (half of a whole note)
+- `2t` - half note triplet (3 of these is equal to `1n`)
 - `4n` - quarter note (a quarter of a whole note)
 - `4t` - quarter note triplet (3 of these is equal to `2n`)
 - `8n` - eighth note (1/8 of a whole note)
@@ -402,7 +403,7 @@ Primitive values:
 - **numbers** - integers and floats (`0`, `0.25`, `10000`, etc.)
 - **lists** (space-separated) - `[0 1 2 3 4 5 6]`
 - **notes** - `e3`, `d#4`, `f2`, etc.
-- **rhythm** - `32t`, `32n`, `16t`, `16n`, `8t`, `8n`, `4t`, `4n`, `2n`, and `1n`
+- **rhythm** - `32t`, `32n`, `16t`, `16n`, `8t`, `8n`, `4t`, `4n`, `2n`, `2t`, and `1n`
 - **rests** - `r32t`, `r32n`, `r16t`, `r16n`, `r8t`, `r8n`, `r4t`, `r4n`, `r2n`, and `r1n`
 - **special strings** - some functions take string arguments, such as `filter` and `osc`
 

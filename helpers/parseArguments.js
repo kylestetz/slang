@@ -15,6 +15,7 @@ export const rhythmMap = {
 	'8n': DIVISION * 12,
 	'4t': DIVISION * 16,
 	'4n':DIVISION * 24,
+	'2t': DIVISION * 32,
 	'2n': DIVISION * 48,
 	'1n': DIVISION * 96,
 }
