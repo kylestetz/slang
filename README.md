@@ -129,7 +129,7 @@ Here are all of the values and how they line up, from slowest to fastest:
 - `64n` - sixty-fourth note (1/64 of a whole note)
 - `64t` - sixty-fourth triplet (3 of these is equal to `32n`)
 
-When creating a rhythm in Slang you can freely mix and match these values. A good rule of thumb is that you should aim for all of your rhythm values to add up to `1n` or multiples of `1n`; for example `4n 4n 4n 4n`, `4n 8n 8n 4n 2n`, and `4n 16t 16t 16t 8n 4t 4t 4t` all add up to `1n`.
+When creating a rhythm in Slang you can freely mix and match these values. A good rule of thumb is that you should aim for all of your rhythm values to add up to `1n` or multiples of `1n`; for example `4n 4n 4n 4n`, `4n 8n 8n 2n`, and `4n 16t 16t 16t 8n 4t 4t 4t` all add up to `1n`.
 
 Sometimes you'll want to pause for a beat without playing a note. This is called a _rest_ in music terminology. Adding `r` in front of any rhythm value will turn it into a rest (and it will appear lighter in color within the Slang editor); for example `4n 4n 4n r4n` will play three quarter notes and then rest for the length of one quarter note.
 
