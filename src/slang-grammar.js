@@ -1,5 +1,6 @@
+module.exports = `
 Sound {
-  Line = Graph | Play | Comment
+  Line = Graph | Play | Comment | Tempo
 
   /*
     A comment is any line that begins with #
@@ -68,6 +69,15 @@ Sound {
   Pipe = ("~" PolySoundBlock)+
 
   /*
+    TEMPO LINES
+    A tempo line is a tempo keyword, followed by 
+    the sound beats per minute.
+  */
+
+  Tempo = TempoKeyword tempoPrim
+  TempoKeyword = "tempo" | "[]"
+
+  /*
     PLAY LINES
     A play line is a play keyword (either 'play'
     or '>'), followed by the sound we want to play,
@@ -107,6 +117,7 @@ Sound {
     | "-"? digit+ -- int
   
   int = "-"? digit+
+  tempoPrim = digit+
 
   note = letter "#" digit+ -- sharp
     | letter "b" digit+ -- flat
@@ -114,3 +125,4 @@ Sound {
   
   rhythm = "r"? digit+ letter
 }
+`;

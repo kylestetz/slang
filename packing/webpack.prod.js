@@ -2,7 +2,7 @@ const path = require('path');
 
 module.exports = {
   mode: 'production',
-  entry: './editor.js',
+  entry: './src/editor.js',
   output: {
     filename: 'site.min.js',
     path: path.resolve(__dirname, 'public/build')

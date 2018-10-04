@@ -1,4 +1,3 @@
-import util from 'util';
 import ohm from 'ohm-js';
 import range from 'lodash/range';
 import * as Range from 'tonal-range';
@@ -85,6 +84,13 @@ semantics.addOperation('toAST', {
 			type: 'play',
 			sound: { name: sound.sourceString },
 			patterns: pattern.asIteration().toAST(),
+		};
+	},
+
+	Tempo(kw, value) {
+		return {
+			type: 'tempo',
+			value,
 		};
 	},
 

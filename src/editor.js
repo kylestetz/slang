@@ -10,10 +10,15 @@ import 'codemirror/theme/duotone-light.css';
 import classMap from './classes/classMap';
 import { functionMap } from './functions';
 
+import logo from './static/img/logo.svg';
+import './static/css/editor.css';
+
 // ------------------------------ EDITOR ------------------------------
 
 const keywords = Object.keys(classMap).concat(Object.keys(functionMap), ['notes', 'rhythm']);
 const keywordRegex = new RegExp(`(?:${keywords.join('|')})\\b`);
+
+console.log(logo);
 
 CodeMirror.defineSimpleMode("slang", {
 	start: [
@@ -55,6 +60,8 @@ CodeMirror.defineSimpleMode("slang", {
 const existingCode = window.localStorage.getItem('code');
 const defaultCode = `# Welcome to Slang! Here's an example to get you started.
 # Click the Run button above to start playing this code.
+
+tempo 200
 
 # Make a sound called @synth with a triangle wave
 @synth (adsr (osc tri) 64n 8n 0.5 8n)
@@ -140,4 +147,3 @@ function displayError(message) {
 function clearError() {
 	$error.classList.remove('show');
 }
-
