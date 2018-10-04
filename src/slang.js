@@ -30,12 +30,13 @@ semantics.addOperation('toAST', {
 	},
 	Pipe: (char, soundBlock) => soundBlock.toAST(),
 
-	function: (lp, soundArguments /* , rp */) => {
+	function: (lp, soundArguments, rp) => {
 		const [func, ...rest] = soundArguments.asIteration().toAST();
 		return {
 			type: 'function',
 			function: func,
 			arguments: rest,
+			rp,
 		};
 	},
 

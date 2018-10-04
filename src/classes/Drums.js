@@ -26,8 +26,7 @@ class Drums extends Block {
 		}
 	}
 
-	schedule(start, stop, note) {
-		// Removed envelopeMode from parameters, it's never used
+	schedule(start, stop, note, envelope) {
 		if (!drumBuffers.length || loadingDrums) return null;
 		// we only have 12 samples available but we shouldn't
 		// burden the user with that knowledge so let's use
@@ -54,7 +53,8 @@ class Drums extends Block {
 		// Finally, if we are in mono mode, just connect the osc to
 		// the ouput.
 		sample.connect(this.getOutput());
-		return null;
+
+		return envelope; // TODO: Quickfix to keep lint from complaining
 	}
 	loadDrumSounds() {
 		loadingDrums = true;
