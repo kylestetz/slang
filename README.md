@@ -98,6 +98,43 @@ play @synth
 
 💡 Try making multiple play lines for the same sound to make polyphonic melodies and drum beats.
 
+## Rhythm and Note Values
+
+Musical notes and rhythm values are a core concept of Slang, so let's look at them in a bit more detail.
+
+**Note values** may look familiar to you if you've ever learned an instrument. They contain both a note (like `c`, `f#`, or `a`) and a number that represents the _octave_. If you imagine a large piano, `c4` is the C key right smack in the middle of it. `c3` will be the C key one octave down from that, `c5` will be one octave up, etc. If you're unfamiliar with how the notes map to a keyboard, [here is a handy image](https://3.bp.blogspot.com/-X7bigGKA1ww/WdA-5CZ0e3I/AAAAAAAABWE/MlQ5xkgSEmICpi3HGpqnRn2gwKX7bdz1ACLcBGAs/s320/piano1.png).
+
+Note values can also be expressed as numbers. If you've worked with synthesizers or electronic instruments before you might be familiar with the MIDI protocol, which among other things represents all notes on a keyboard from `0` - `127`. `c4` is equivalent to the MIDI number `64`, and to move up or down an octave you can add or subtract `12`.
+
+Here are the notes in the fourth octave with their MIDI number equivalents:
+```
+Notes:   c4  c#4 d4  d#4 e4  f4  f#4 g4  g#4 a4  a#4 b4  c5
+Numbers: 64  65  66  67  68  69  70  71  72  73  74  75  76
+```
+
+**Rhythm values** describe the _length_ of the note as a fraction of a _measure_. The longest possible note in Slang is `1n`, which in music notation would be referred to as a _whole note_.
+
+Here are all of the values and how they line up, from slowest to fastest:
+- `1n` - whole note (the longest note)
+- `2n` - half note (half of a whole note)
+- `2t` - half note triplet (3 of these is equal to `1n`)
+- `4n` - quarter note (a quarter of a whole note)
+- `4t` - quarter note triplet (3 of these is equal to `2n`)
+- `8n` - eighth note (1/8 of a whole note)
+- `8t` - eighth note triplet (3 of these is equal to `4n`)
+- `16n` - sixteenth note (1/16 of a whole note)
+- `16t` - sixteenth triplet (3 of these is equal to `8n`)
+- `32n` - thirty-second note (1/32 of a whole note)
+- `32t` - thirty-second triplet (3 of these is equal to `16n`)
+- `64n` - sixty-fourth note (1/64 of a whole note)
+- `64t` - sixty-fourth triplet (3 of these is equal to `32n`)
+
+When creating a rhythm in Slang you can freely mix and match these values. A good rule of thumb is that you should aim for all of your rhythm values to add up to `1n` or multiples of `1n`; for example `4n 4n 4n 4n`, `4n 8n 8n 2n`, and `4n 16t 16t 16t 8n 4t 4t 4t` all add up to `1n`.
+
+Sometimes you'll want to pause for a beat without playing a note. This is called a _rest_ in music terminology. Adding `r` in front of any rhythm value will turn it into a rest (and it will appear lighter in color within the Slang editor); for example `4n 4n 4n r4n` will play three quarter notes and then rest for the length of one quarter note.
+
+In addition to the rhythm notation you can also use **number values**, which correspond to _seconds_. Slang runs at a tempo of 120 beats per minute, which means that a whole note — `1n` — is exactly `2` seconds long. Writing `(rhythm [2])` and `(rhythm [1n])` produce exactly the same rhythm. This is useful in other functions like [`(adsr)`](https://github.com/kylestetz/slang#amp-envelope---adsr-osc-attack-001-decay-0-sustain-1-release-005) where the attack, decay, and release all accept a rhythm value.
+
 ## Syntax
 
 Functions are contained within parentheses, much like in Clojure. The first keyword in a function is the **function name**, which is followed by all of its arguments. Any argument can be a primitive value or a list (neat!); if it's a list, Slang will take one value at a time and loop back to the beginning when it reaches the end. Check out the Reference section for lots of usage examples.
@@ -142,14 +179,29 @@ _Pro tip_: Any number above 11 will wrap around using modulus, so for example 25
 
 #### Amp Envelope - `(adsr <osc> <attack: 0.01> <decay: 0> <sustain: 1> <release: 0.05>)`
 
-Creates an amp envelope which contains an oscillator followed by ADSR values. The attack, decay, and release arguments can be numbers or rhythm values (e.g. `8n`, `8t`, `4n`, etc.). Sustain is a number from 0 - 1.
+Creates an amp envelope which contains an oscillator followed by ADSR values. If you're unfamiliar with the concept of an amp envelope, check out the _Typical Stages_ section of [this tutorial](https://theproaudiofiles.com/synthesis-101-envelope-parameters-uses/). Amp envelopes control the _volume_ of a sound over the course of a single note.
 
 Since amp envelopes contain oscillators they can kick off a chain of sound.
 
+`osc`: An oscillator function, e.g. `(osc tri)`
+
+`attack`: A rhythm value or number in seconds corresponding to how long the sound takes to fade in
+
+`decay`: A rhythm value or number in seconds corresponding to how long the sound takes to descend to the sustain value
+
+`sustain`: A value from `0` - `1` describing how loud the note should be while it is sustained.
+
+`release`: A rhythm value or number in seconds corresponding to how long the sound takes to fade from its sustain value down to `0`.
+
 Usage:
 ```
-# Creates a sine wave oscillator with an amp envelope.
-@synth (adsr (osc sine) 8n 8n 0.5 4n)
+# Try each of these envelopes one at a time to get a feel for what ADSR does.
+@synth (adsr (osc sine) 8n 8n 1 4n)
+# @synth (adsr (osc sine) 0 0 1 0)
+# @synth (adsr (osc sine) 4n 0 1 2n)
+# @synth (adsr (osc sine) 16n 16n 0.2 8n)
+
+play @synth (rhythm [4n]) (notes [c4 d4 e4 f4 g4 a4 b4 c5])
 ```
 
 #### Filter - `+ (filter <type: lp> <frequency: 100> <resonance: 1>)`
@@ -351,7 +403,7 @@ Primitive values:
 - **numbers** - integers and floats (`0`, `0.25`, `10000`, etc.)
 - **lists** (space-separated) - `[0 1 2 3 4 5 6]`
 - **notes** - `e3`, `d#4`, `f2`, etc.
-- **rhythm** - `32t`, `32n`, `16t`, `16n`, `8t`, `8n`, `4t`, `4n`, `2n`, and `1n`
+- **rhythm** - `32t`, `32n`, `16t`, `16n`, `8t`, `8n`, `4t`, `4n`, `2n`, `2t`, and `1n`
 - **rests** - `r32t`, `r32n`, `r16t`, `r16n`, `r8t`, `r8n`, `r4t`, `r4n`, `r2n`, and `r1n`
 - **special strings** - some functions take string arguments, such as `filter` and `osc`
 
