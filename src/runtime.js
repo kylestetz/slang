@@ -1,36 +1,10 @@
 import Sound from './classes/Sound';
 import context from './helpers/context';
-import { changeTempo } from './helpers/parseArguments.js';
+import { changeTempo } from './helpers/parseArguments';
 
 const model = {
 	sounds: {},
 };
-
-function runScene(scene) {
-	// a scene is a collection of lines that go together.
-
-	// Stage 1: build the scene
-	scene.forEach((operation) => {
-		switch (operation.type) {
-			case 'graph':
-				parseGraph(operation);
-				break;
-			case 'play':
-				parsePlay(operation);
-				break;
-			case 'tempo':
-				parseTempo(operation);
-				break;
-		}
-	});
-
-	const startTime = context.currentTime + 0.01;
-
-	// Stage 2: Schedule the sound
-	Object.keys(model.sounds).forEach((id) => {
-		model.sounds[id].start(startTime);
-	});
-}
 
 function parseGraph(graph) {
 	const { sound } = graph;
@@ -53,7 +27,7 @@ function parseGraph(graph) {
 	} else {
 		throw new Error(`Tried to access ${sound.property} of non-existant sound ${sound.name}`);
 	}
-};
+}
 
 function parsePlay(operation) {
 	model.sounds[operation.sound.name].schedule(operation.patterns);
@@ -62,6 +36,33 @@ function parsePlay(operation) {
 function parseTempo(operation) {
 	console.log(operation);
 	changeTempo(operation.value);
+}
+
+function runScene(scene) {
+	// a scene is a collection of lines that go together.
+
+	// Stage 1: build the scene
+	scene.forEach((operation) => {
+		switch (operation.type) {
+		case 'graph':
+			parseGraph(operation);
+			break;
+		case 'play':
+			parsePlay(operation);
+			break;
+		case 'tempo':
+			parseTempo(operation);
+			break;
+		default:
+		}
+	});
+
+	const startTime = context.currentTime + 0.01;
+
+	// Stage 2: Schedule the sound
+	Object.keys(model.sounds).forEach((id) => {
+		model.sounds[id].start(startTime);
+	});
 }
 
 function clearScene() {

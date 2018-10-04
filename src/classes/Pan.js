@@ -25,7 +25,7 @@ class Pan extends Block {
 	schedule(start) {
 		if (!this.getPolyMode()) {
 			this.pan.pan.setValueAtTime(this.value.next(), context.currentTime, 0);
-			return;
+			return null;
 		}
 
 		const pan = context.createStereoPanner();
@@ -34,6 +34,7 @@ class Pan extends Block {
 		return {
 			input: pan,
 			output: pan,
+			start,
 		};
 	}
 }

@@ -26,7 +26,7 @@ class Filter extends Block {
 		// the schedule method will take care of that; otherwise we'll
 		// end up with the second value in a cycle on the first
 		// scheduled note.
-		this.filter.type = typeMap['lp'];
+		this.filter.type = typeMap.lp;
 		this.filter.frequency.setValueAtTime(11025, context.currentTime, 0);
 		this.filter.Q.setValueAtTime(1, context.currentTime, 0);
 
@@ -41,7 +41,7 @@ class Filter extends Block {
 			this.filter.type = typeMap[this.type.next()];
 			this.filter.frequency.setValueAtTime((this.amount.next() / 127) * 11025, start, 10);
 			this.filter.Q.setValueAtTime(this.Q.next(), start, 10);
-			return;
+			return null;
 		}
 
 		const filter = context.createBiquadFilter();
@@ -51,17 +51,15 @@ class Filter extends Block {
 
 		// TODO: envelope mode to return filter.frequency as property
 
-		if (envelopeMode) {
-			return {
+		return envelopeMode
+			? {
 				node: filter,
 				property: filter.frequency,
+			}
+			: {
+				input: filter,
+				output: filter,
 			};
-		}
-
-		return {
-			input: filter,
-			output: filter,
-		};
 	}
 }
 

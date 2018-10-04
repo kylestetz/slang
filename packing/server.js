@@ -12,8 +12,8 @@ const autoOpenBrowser = true;
 const app = express();
 const compiler = webpack(webpackConfig);
 const devMiddleware = devMiddlewareFn(compiler, {
-    publicPath: webpackConfig.output.publicPath,
-    quiet: true,
+	publicPath: webpackConfig.output.publicPath,
+	quiet: true,
 });
 
 // handle fallback for HTML5 history API
@@ -31,11 +31,13 @@ const uri = `http://localhost:${port}`;
 console.log('> Starting dev server...');
 
 devMiddleware.waitUntilValid(() => {
-    console.log(`> Listening at ${uri}\n`);
-    // when env is testing, don't need open it
-    if (autoOpenBrowser) {
-        opn(uri);
-    }
+	console.log(`> Listening at ${uri}\n`);
+	// when env is testing, don't need open it
+	if (autoOpenBrowser) {
+		opn(uri);
+	}
 });
 
 const server = app.listen(port);
+
+module.exports = server;

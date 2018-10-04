@@ -6,8 +6,9 @@ import { parseArgument } from '../helpers/parseArguments';
 
 // For now let's strip the spaces out of the chord names
 // to simplify the arguments to the (chord ...) function.
-const scaleNamesMap = Scale.names().reduce((ob, name) => {
-	ob[name.replace(/( |\#)/g, '')] = name;
+const scaleNamesMap = Scale.names().reduce((srcOb, name) => {
+	const ob = Object.assign({}, srcOb);
+	ob[name.replace(/( |#)/g, '')] = name;
 	return ob;
 }, {});
 
@@ -32,7 +33,7 @@ export default class Chord extends FunctionCall {
 				// figure out how many times it repeats ...
 				const repeat = Math.ceil(length / notes.length);
 				// ... repeat it ...
-				notes = flatMap(Array(repeat).fill(null), __ => notes);
+				notes = flatMap(Array(repeat).fill(null), () => notes);
 				// ... now take the exact amount.
 				notes = take(notes, length);
 			}

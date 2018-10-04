@@ -25,8 +25,8 @@ class Block {
 		// This input allows us to give each
 		// block a consistent interface without
 		// having to name it all particular.
-		this._input = context.createGain();
-		this._output = context.createGain();
+		this.input = context.createGain();
+		this.output = context.createGain();
 
 		// Some blocks will want to implement
 		// polyphony, which really just means
@@ -35,7 +35,7 @@ class Block {
 		// to other nodes. Implementers just
 		// need to call this.getPolyMode() to
 		// find out which behavior to follow.
-		this._polyMode = false;
+		this.polyMode = false;
 	}
 
 	instantiate() {
@@ -43,6 +43,8 @@ class Block {
 		// its audio graph. The methods getInput()
 		// and getOutput() give us an easy way to
 		// connect everything together.
+
+		return this;
 	}
 
 	connect(block) {
@@ -58,26 +60,33 @@ class Block {
 	schedule(start, stop, note) {
 		// use the timestamp to schedule calls to
 		// oscillators or what have you.
+
+		return {
+			start,
+			stop,
+			note,
+			me: this,
+		};
 	}
 
 	destroy() {
-		this._output.disconnect();
+		this.output.disconnect();
 	}
 
 	getInput() {
-		return this._input;
+		return this.input;
 	}
 
 	getOutput() {
-		return this._output;
+		return this.output;
 	}
 
 	setPolyMode(flag) {
-		this._polyMode = flag;
+		this.polyMode = flag;
 	}
 
 	getPolyMode() {
-		return this._polyMode;
+		return this.polyMode;
 	}
 }
 

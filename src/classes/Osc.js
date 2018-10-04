@@ -1,7 +1,6 @@
 import { Note } from 'tonal';
 import Block from './Block';
 import context from '../helpers/context';
-import mtof from '../helpers/mtof';
 import { parseArgument } from '../helpers/parseArguments';
 
 const typeMap = {
@@ -16,7 +15,7 @@ const typeMap = {
 
 	sq: 'square',
 	square: 'square',
-}
+};
 
 class Osc extends Block {
 	constructor(...args) {
@@ -34,11 +33,11 @@ class Osc extends Block {
 
 		osc.type = typeMap[this.type.next()];
 
-		let noteMidiValue = typeof note === 'string' ? Note.midi(note) : note;
+		const noteMidiValue = typeof note === 'string' ? Note.midi(note) : note;
 		osc.frequency.setValueAtTime(
 			Note.freq(Note.fromMidi(noteMidiValue + this.detune.next())),
 			context.currentTime,
-			0
+			0,
 		);
 
 		osc.start(start);
@@ -59,7 +58,7 @@ class Osc extends Block {
 			return {
 				node: osc,
 				property: osc,
-			}
+			};
 		} else if (this.getPolyMode()) {
 			// An osc has no input! Not sure
 			// what to do about that.
@@ -71,6 +70,8 @@ class Osc extends Block {
 		// Finally, if we are in mono mode, just connect the osc to
 		// the ouput.
 		osc.connect(this.getOutput());
+
+		return null;
 	}
 }
 

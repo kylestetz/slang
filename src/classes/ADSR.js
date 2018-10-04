@@ -44,7 +44,7 @@ class ADSR extends Block {
 			sustainLevel: 1,
 			releaseTime: 0.05,
 			gateTime: 0.25,
-			releaseCurve: "exp",
+			releaseCurve: 'exp',
 		});
 	}
 
@@ -95,6 +95,7 @@ class ADSR extends Block {
 		}
 
 		// TODO: only create gain for osc, otherwise apply to existing property
+		return null;
 	}
 }
 

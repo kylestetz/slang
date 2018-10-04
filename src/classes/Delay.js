@@ -1,5 +1,4 @@
 import Block from './Block';
-import context from '../helpers/context';
 import tuna from '../helpers/tuna';
 import { parseArgument } from '../helpers/parseArguments';
 
@@ -36,7 +35,7 @@ class Delay extends Block {
 	schedule(start) {
 		if (!this.getPolyMode()) {
 			// update values here
-			return;
+			return null;
 		}
 
 		const delay = new tuna.Delay({
@@ -51,6 +50,7 @@ class Delay extends Block {
 		return {
 			input: delay,
 			output: delay,
+			start,
 		};
 	}
 }

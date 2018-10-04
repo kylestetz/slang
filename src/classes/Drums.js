@@ -1,7 +1,5 @@
-import { Note } from 'tonal';
 import Block from './Block';
 import context from '../helpers/context';
-import mtof from '../helpers/mtof';
 import { parseArgument } from '../helpers/parseArguments';
 import BufferLoader from '../helpers/BufferLoader';
 import drumMap from '../helpers/drumMap';
@@ -28,8 +26,9 @@ class Drums extends Block {
 		}
 	}
 
-	schedule(start, stop, note, envelopeMode) {
-		if (!drumBuffers.length || loadingDrums) return;
+	schedule(start, stop, note) {
+		// Removed envelopeMode from parameters, it's never used
+		if (!drumBuffers.length || loadingDrums) return null;
 		// we only have 12 samples available but we shouldn't
 		// burden the user with that knowledge so let's use
 		// mod 12, which allows them to use chords, scales,
@@ -55,18 +54,20 @@ class Drums extends Block {
 		// Finally, if we are in mono mode, just connect the osc to
 		// the ouput.
 		sample.connect(this.getOutput());
+		return null;
 	}
 	loadDrumSounds() {
 		loadingDrums = true;
 		// Get a list of files
 		const files = Object.keys(drumMap).map(key => drumMap[key].file);
 		// Load the files!
-		const loader = new BufferLoader(context, files, list => {
+		const loader = new BufferLoader(context, files, (list) => {
 			// set our global variable to the list of buffers. Done.
 			drumBuffers = list;
 			loadingDrums = false;
 		});
 		loader.load();
+		return this;
 	}
 }
 

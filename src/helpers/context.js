@@ -1,9 +1,4 @@
-let context;
-
-if (window.webkitAudioContext) {
-	context = new webkitAudioContext();
-} else {
-	context = new AudioContext();
-}
+const WebkitAudio = 'webkitAudioContext';
+const context = window[WebkitAudio] ? new window[WebkitAudio]() : new AudioContext();
 
 export default context;

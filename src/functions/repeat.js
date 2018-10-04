@@ -1,5 +1,4 @@
 import FunctionCall from './FunctionCall';
-import { parseArgument } from '../helpers/parseArguments';
 import List from '../helpers/List';
 
 export default class Random extends FunctionCall {
@@ -16,12 +15,12 @@ export default class Random extends FunctionCall {
 		if (this.arguments[1] && this.arguments[1].toArray) {
 			data = this.arguments[1].toArray();
 		} else {
-			data = this.arguments[1];
+			[, data] = this.arguments;
 		}
 
 		const repeat = this.arguments[0].next();
 
-		for (let i = 0; i < repeat; i++) {
+		for (let i = 0; i < repeat; i += 1) {
 			this.data = this.data.concat(data);
 		}
 

@@ -8,17 +8,17 @@ import Transpose from './transpose';
 import Interpolate from './interpolate';
 
 export const functionMap = {
-	'random': Random,
-	'chord': Chord,
-	'repeat': Repeat,
-	'flatten': Flatten,
-	'reverse': Reverse,
-	'shuffle': Shuffle,
-	'transpose': Transpose,
-	'lerp': Interpolate,
+	random: Random,
+	chord: Chord,
+	repeat: Repeat,
+	flatten: Flatten,
+	reverse: Reverse,
+	shuffle: Shuffle,
+	transpose: Transpose,
+	lerp: Interpolate,
 };
 
-export default function(functionObject) {
+export default function (functionObject) {
 	if (functionMap[functionObject.function]) {
 		return new functionMap[functionObject.function](functionObject);
 	}

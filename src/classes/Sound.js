@@ -24,7 +24,7 @@ class Sound {
 		this.idFactory = 0;
 
 		// This is for debugging.
-		this._graphs = [];
+		this.graphs = [];
 
 		// ========================================
 		// 				INSTANTIATE
@@ -41,7 +41,8 @@ class Sound {
 	}
 
 	nextId() {
-		return `--${++this.idFactory}`;
+		this.idFactory += 1;
+		return `--${this.idFactory}`;
 	}
 
 	appendToGraph(graph) {
@@ -53,14 +54,16 @@ class Sound {
 
 		// Add to the debug graphs array in case
 		// we need to poke around.
-		this._graphs.push(graph);
+		this.graphs.push(graph);
 	}
 
 	createGraph(pipe, index) {
 		// Create a new set of connections.
 		this.connections[index] = [];
 
-		const model = pipe.reduce((model, block, i) => {
+		const model = pipe.reduce((m, block) => {
+			// i removed prom params as it is not used
+			const theModel = Object.assign({}, m);
 			// A block can either be a simple Block function
 			// like `osc` & `filter`, OR it can be a polyblock.
 			// We have to treat those two cases differently.
@@ -69,30 +72,29 @@ class Sound {
 				// It seems like PolyBlocks aren't going to
 				// be able to support name variables? Tbd.
 				const thisId = `poly${this.nextId()}`;
-				model[thisId] = new PolyBlock(block);
-				model[thisId].instantiate();
+				theModel[thisId] = new PolyBlock(block);
+				theModel[thisId].instantiate();
 
 				this.connections[index].push(thisId);
 
-				return model;
-			} else {
-				const thisId = block.name || `${block.function}${this.nextId()}`;
-				if (classMap[block.function]) {
-					// If the block was named, we'll stash
-					// it by name in the model. Otherwise,
-					// give it an internal ID that we can
-					// use to reference it.
-					model[thisId] = new classMap[block.function](...block.arguments);
-					model[thisId].instantiate();
-
-					// Add this ID to the connection list.
-					this.connections[index].push(thisId);
-
-					return model;
-				} else {
-					throw new Error(`${this.name}: Block type "${block.function}" does not exist`);
-				}
+				return theModel;
 			}
+
+			const thisId = block.name || `${block.function}${this.nextId()}`;
+			if (classMap[block.function]) {
+				// If the block was named, we'll stash
+				// it by name in the model. Otherwise,
+				// give it an internal ID that we can
+				// use to reference it.
+				model[thisId] = new classMap[block.function](...block.arguments);
+				model[thisId].instantiate();
+
+				// Add this ID to the connection list.
+				this.connections[index].push(thisId);
+
+				return model;
+			}
+			throw new Error(`${this.name}: Block type "${block.function}" does not exist`);
 		}, {});
 
 		// Append this all to our model
@@ -109,15 +111,14 @@ class Sound {
 
 		const connections = this.connections[index];
 
-		const length = this.connections[index].length;
+		const { length } = this.connections[index];
 
-		for (let i = 0; i < length; i++) {
+		for (let i = 0; i < length; i += 1) {
 			// If there is an adjacent block...
 			if (connections[i] && connections[i + 1]) {
 				// Connect them!
-				this.model[connections[i]].connect(
-					this.model[connections[i + 1]]
-				);
+				this.model[connections[i]]
+					.connect(this.model[connections[i + 1]]);
 			} else {
 				// We're at the final block; connect
 				// it to the output.

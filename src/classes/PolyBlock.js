@@ -10,20 +10,17 @@ class PolyBlock extends Block {
 	instantiate() {
 		// Turn the block model objects into Block classes.
 		this.blocks = this.blockDefinitions.map((block) => {
-			if (classMap[block.function]) {
-				// We're doing the same thing that the Sound
-				// class is doing with the blocks here, but
-				// in `schedule` we're going to do some tricks
-				// to link together all of the sounds in a
-				// polyphonic way.
-				const b = new classMap[block.function](...block.arguments);
-				// Tell this block it's in poly mode.
-				b.setPolyMode(true);
-				b.instantiate();
-				return b;
-			} else {
-				throw new Error(`PolyBlock: Block type "${block.function}" does not exist`);
-			}
+			if (!(block.function in classMap)) throw new Error(`PolyBlock: Block type "${block.function}" does not exist`);
+			// We're doing the same thing that the Sound
+			// class is doing with the blocks here, but
+			// in `schedule` we're going to do some tricks
+			// to link together all of the sounds in a
+			// polyphonic way.
+			const b = new classMap[block.function](...block.arguments);
+			// Tell this block it's in poly mode.
+			b.setPolyMode(true);
+			b.instantiate();
+			return b;
 		});
 	}
 	schedule(start, stop, note) {
@@ -38,13 +35,11 @@ class PolyBlock extends Block {
 		const connections = this.blocks.map(block => block.schedule(start, stop, note));
 
 		// Now loop through them and chain them together.
-		for (let i = 0; i < connections.length; i++) {
+		for (let i = 0; i < connections.length; i += 1) {
 			// If there is an adjacent block...
 			if (connections[i] && connections[i + 1]) {
 				// Connect them!
-				connections[i].output.connect(
-					connections[i + 1].input
-				);
+				connections[i].output.connect(connections[i + 1].input);
 			} else {
 				// We're at the final block; connect
 				// it to the output.

@@ -7,17 +7,19 @@
     "sourceType": "module"
   },
   "env": {
-    "es6": true
+    "es6": true,
+    "browser": true
   },
   "rules": {
       "indent": [
           "error",
-          4
+          "tab"
       ],
       "linebreak-style": [
           "error",
           "unix"
       ],
+      "no-tabs": 0,
       "quotes": 1,
       "semi": [
           "error",
@@ -28,7 +30,8 @@
           "error",
           {
               "devDependencies": [
-                  "dist/*.js"
+                  "dist/*.js",
+                  "packing/*.js"
               ]
           }
       ]

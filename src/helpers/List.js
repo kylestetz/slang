@@ -24,17 +24,17 @@ class List {
 		} else if (typeof listObject === 'object' && listObject.arguments) {
 			this.values = parseArguments(listObject.arguments);
 		} else {
-			throw new Error(`List got a weird value? ${listObject}`)
+			throw new Error(`List got a weird value? ${listObject}`);
 		}
 
-		this._currentIndex = 0;
+		this.currentIndex = 0;
 	}
 	toArray() {
 		return this.values;
 	}
 	next() {
-		const value = this.values[this._currentIndex].next();
-		this._currentIndex = (this._currentIndex + 1) % this.values.length;
+		const value = this.values[this.currentIndex].next();
+		this.currentIndex = (this.currentIndex + 1) % this.values.length;
 		return value;
 	}
 }

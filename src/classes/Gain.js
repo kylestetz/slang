@@ -22,7 +22,7 @@ class Gain extends Block {
 	schedule(start) {
 		if (!this.getPolyMode()) {
 			this.gain.gain.setValueAtTime(this.level.next(), context.currentTime, 0);
-			return;
+			return null;
 		}
 
 		const gain = context.createGain();

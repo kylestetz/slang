@@ -18,6 +18,8 @@
     "ohm-js": "^0.14.0",
     "stereo-panner-node": "^1.4.0",
     "tonal": "^1.1.3",
+    "tonal-distance": "^2.0.0",
+    "tonal-interval": "^2.0.0",
     "tonal-range": "^1.1.2",
     "tonal-scale": "^1.1.2",
     "tunajs": "^1.0.1"

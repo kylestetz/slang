@@ -10,41 +10,40 @@ export default function BufferLoader(context, urlList, callback) {
 	this.loadCount = 0;
 }
 
-BufferLoader.prototype.loadBuffer = function(url, index) {
+BufferLoader.prototype.loadBuffer = (url, index) => {
 	// Load buffer asynchronously
-	var request = new XMLHttpRequest();
-	request.open("GET", url, true);
-	request.responseType = "arraybuffer";
+	const request = new XMLHttpRequest();
+	request.open('GET', url, true);
+	request.responseType = 'arraybuffer';
 
-	var loader = this;
+	const loader = this;
 
-	request.onload = function() {
+	request.onload = () => {
 		// Asynchronously decode the audio file data in request.response
 		loader.context.decodeAudioData(
 			request.response,
-			function(buffer) {
+			(buffer) => {
 				if (!buffer) {
-					console.error('BufferLoader: error decoding file data from url: ' + url);
+					console.error(`BufferLoader: error decoding file data from url: ${url}`);
 					return;
 				}
 				loader.bufferList[index] = buffer;
-				if (++loader.loadCount == loader.urlList.length)
-					loader.onload(loader.bufferList);
+				loader.loadCount += 1;
+				if (loader.loadCount === loader.urlList.length) loader.onload(loader.bufferList);
 			},
-			function(error) {
-				console.error('BufferLoader: decodeAudioData error', error);
-			}
+			(error) => {
+				console.error(`BufferLoader: decodeAudioData error ${error}`);
+			},
 		);
 	};
 
-	request.onerror = function() {
-		console.log('BufferLoader: error decoding', url);
+	request.onerror = () => {
+		console.log(`BufferLoader: error decoding ${url}`);
 	};
 
 	request.send();
 };
 
-BufferLoader.prototype.load = function() {
-	for (var i = 0; i < this.urlList.length; ++i)
-	this.loadBuffer(this.urlList[i], i);
+BufferLoader.prototype.load = () => {
+	for (let i = 0; i < this.urlList.length; i += 1) this.loadBuffer(this.urlList[i], i);
 };

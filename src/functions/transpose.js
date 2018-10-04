@@ -1,5 +1,5 @@
 import { transpose as tonalTranspose } from 'tonal-distance';
-import { fromSemitones } from "tonal-interval"
+import { fromSemitones } from 'tonal-interval';
 import FunctionCall from './FunctionCall';
 import { parseArgument, rhythmMap } from '../helpers/parseArguments';
 
@@ -17,7 +17,7 @@ export default class Transpose extends FunctionCall {
 	next(passedValue) {
 		const rhythmMapObj = rhythmMap();
 		console.log(rhythmMapObj);
-		let nextValue = passedValue || this.data.next();
+		const nextValue = passedValue || this.data.next();
 
 		// Unfortunately transposing rhythms won't work
 		// easily the way the rhythm strings are passed around
@@ -47,7 +47,7 @@ export default class Transpose extends FunctionCall {
 		if (typeof nextValue === 'string') {
 			return tonalTranspose(
 				nextValue,
-				fromSemitones(Math.floor(this.amount.next()))
+				fromSemitones(Math.floor(this.amount.next())),
 			);
 		}
 

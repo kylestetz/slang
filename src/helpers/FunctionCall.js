@@ -1,12 +1,12 @@
 import * as Scale from 'tonal-scale';
 import parseArguments, { parseArgument } from './parseArguments';
-import List from './List';
 
 // For now let's strip the spaces out of the chord names
 // to simplify the arguments to the (chord ...) function.
 const scaleNamesMap = Scale.names().reduce((ob, name) => {
-	ob[name.replace(/ /g, '')] = name;
-	return ob;
+	const object = Object.assign({}, ob);
+	object[name.replace(/ /g, '')] = name;
+	return object;
 }, {});
 
 class FunctionCall {
@@ -34,15 +34,15 @@ class FunctionCall {
 	}
 	next() {
 		switch (this.type) {
-			case 'random': return this.random();
-			case 'chord': return this.chord();
-			default:
-				throw new Error(`Function ${this.type} does not exist`);
+		case 'random': return this.random();
+		case 'chord': return this.chord();
+		default:
+			throw new Error(`Function ${this.type} does not exist`);
 		}
 	}
 
 	toArray() {
-		if (this.type === 'chord') return this.chordList.toArray();
+		return this.type === 'chord' ? this.chordList.toArray() : null;
 	}
 
 	// ============================================================
@@ -51,8 +51,9 @@ class FunctionCall {
 
 	random() {
 		// Returns a single value
-		if (this.randomList) return this.randomList[Math.floor(Math.random() * this.randomList.length)].next();
-		return this.arguments[Math.floor(Math.random() * this.arguments.length)].next();
+		return this.randomList
+			? this.randomList[Math.floor(Math.random() * this.randomList.length)].next()
+			: this.arguments[Math.floor(Math.random() * this.arguments.length)].next();
 	}
 
 	chord() {

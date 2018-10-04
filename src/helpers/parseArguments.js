@@ -3,7 +3,7 @@ import FunctionCall from '../functions';
 
 let TEMPO = 120;
 
-export function rhythmMap () {
+export function rhythmMap() {
 	const DIVISION = (1 / 24) / (TEMPO / 60);
 	return {
 		'64t': DIVISION,
@@ -32,8 +32,12 @@ export function rhythmMap () {
 	If it's a static value, `next` will return that value.
 */
 
-export default function(args) {
-	return args.map((arg) => parseArgument(arg));
+function createArgumentFromStaticValue(value) {
+	const rhythmMapObj = rhythmMap();
+	// convert rhythms into numbers if we catch one
+	return {
+		next: () => rhythmMapObj[value] || value,
+	};
 }
 
 export function parseArgument(arg) {
@@ -54,17 +58,12 @@ export function parseArgument(arg) {
 
 	return null;
 }
-export function changeTempo(tempo) {
-	let min = 30;
-	let max = 500;
-	const newTempo = Math.max(Math.min(tempo, max), min);
-	TEMPO = isNaN(newTempo) ? TEMPO : newTempo;
-}
 
-function createArgumentFromStaticValue(value) {
-	const rhythmMapObj = rhythmMap()
-	// convert rhythms into numbers if we catch one
-	return {
-		next: () => rhythmMapObj[value] || value,
-	};
+export default args => args.map(arg => parseArgument(arg));
+
+export function changeTempo(tempo) {
+	const min = 30;
+	const max = 500;
+	const newTempo = Math.max(Math.min(tempo, max), min);
+	TEMPO = Number.isNaN(newTempo) ? TEMPO : newTempo;
 }

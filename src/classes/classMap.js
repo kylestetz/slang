@@ -7,13 +7,13 @@ import Pan from './Pan';
 import Delay from './Delay';
 
 const classMap = {
-	'osc': Osc,
-	'drums': Drums,
-	'filter': Filter,
-	'adsr': ADSR,
-	'gain': Gain,
-	'pan': Pan,
-	'delay': Delay,
+	osc: Osc,
+	drums: Drums,
+	filter: Filter,
+	adsr: ADSR,
+	gain: Gain,
+	pan: Pan,
+	delay: Delay,
 };
 
 export default classMap;

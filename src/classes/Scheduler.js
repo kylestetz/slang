@@ -1,6 +1,5 @@
 import context from '../helpers/context';
 import { parseArgument, rhythmMap } from '../helpers/parseArguments';
-import List from '../helpers/List';
 
 export default class Scheduler {
 	constructor(patterns) {
@@ -22,7 +21,7 @@ export default class Scheduler {
 		// currentTs will keep track of which
 		// tick we've scheduled up to.
 		this.currentTime = null;
-		this.lookahead = .04;
+		this.lookahead = 0.04;
 		this.startTime = null;
 
 		// Loop through whatever we got and overwrite
@@ -31,17 +30,17 @@ export default class Scheduler {
 		// is why we're pulling arguments[0] out.
 		patterns.forEach((pattern) => {
 			switch (pattern.function) {
-				case 'rhythm':
-					// We have to special-case rhythm argument parsing
-					// for now because the xoxoxo-style pattern is not
-					// recognized by the parser as a List.
-					this.rhythmPattern = parseArgument(pattern.arguments[0])
-					break;
-				case 'notes':
-					this.notePattern = parseArgument(pattern.arguments[0]);
-					break;
-				default:
-					break;
+			case 'rhythm':
+				// We have to special-case rhythm argument parsing
+				// for now because the xoxoxo-style pattern is not
+				// recognized by the parser as a List.
+				this.rhythmPattern = parseArgument(pattern.arguments[0]);
+				break;
+			case 'notes':
+				this.notePattern = parseArgument(pattern.arguments[0]);
+				break;
+			default:
+				break;
 			}
 		});
 	}
@@ -55,7 +54,7 @@ export default class Scheduler {
 		this.currentTime = timestamp;
 
 		this.interval = setInterval(() => {
-			const rhythmMapObj = rhythmMap()
+			const rhythmMapObj = rhythmMap();
 			while (this.currentTime < context.currentTime + this.lookahead) {
 				// The tick length could be a number or a string that starts
 				// with 'r', indicating a rest.
@@ -79,7 +78,7 @@ export default class Scheduler {
 						// this.currentTime + this.lengthPattern.next(),
 						this.currentTime + nextTickLength,
 						// note
-						nextNote
+						nextNote,
 					);
 				}
 				// go to the next beat in the clock

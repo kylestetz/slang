@@ -10,6 +10,8 @@ const semantics = grammar.createSemantics();
 semantics.addOperation('toAST', {
 	Comment(hash, text) {
 		return {
+			hash,
+			text,
 			type: 'comment',
 		};
 	},
@@ -28,7 +30,7 @@ semantics.addOperation('toAST', {
 	},
 	Pipe: (char, soundBlock) => soundBlock.toAST(),
 
-	function: (lp, soundArguments, rp) => {
+	function: (lp, soundArguments /* , rp */) => {
 		const [func, ...rest] = soundArguments.asIteration().toAST();
 		return {
 			type: 'function',
@@ -38,7 +40,6 @@ semantics.addOperation('toAST', {
 	},
 
 	PolySoundBlock(monoSB, plus, rest) {
-
 		// Because of the way we wrote the parser,
 		// normal non-polyphonic blocks will still
 		// hit the PolySoundBlock definition. It's
@@ -68,7 +69,7 @@ semantics.addOperation('toAST', {
 			// This is will be a list of soundArguments.
 			arguments: rest,
 			name: name.sourceString,
-		}
+		};
 	},
 
 	// soundArgument: s => s.sourceString,
@@ -90,7 +91,7 @@ semantics.addOperation('toAST', {
 	Tempo(kw, value) {
 		return {
 			type: 'tempo',
-			value: value.toAST()
+			value: value.toAST(),
 		};
 	},
 
@@ -98,6 +99,8 @@ semantics.addOperation('toAST', {
 		return {
 			type: 'list',
 			arguments: soundArguments.asIteration().toAST(),
+			lb,
+			rb,
 		};
 	},
 
@@ -105,24 +108,36 @@ semantics.addOperation('toAST', {
 		return {
 			type: 'list',
 			arguments: range(
-				parseInt(arg1.sourceString),
-				parseInt(arg2.sourceString)
+				parseInt(arg1.sourceString, 10),
+				parseInt(arg2.sourceString, 10),
 			),
+			lb,
+			rb,
 		};
 	},
 
 	range_note(lb, arg1, __, arg2, rb) {
 		return {
 			type: 'list',
-			arguments: Range.chromatic(
-				[arg1.sourceString, arg2.sourceString]
-			),
+			arguments: Range.chromatic([arg1.sourceString, arg2.sourceString]),
+			lb,
+			rb,
 		};
 	},
 
-	int: (neg, i) => neg.sourceString ? parseInt(i.sourceString) * -1 : parseInt(i.sourceString),
-	float: (f) => parseFloat(f.sourceString),
-	note: n => isNaN(n.sourceString) ? n.sourceString : +n.sourceString,
+	int: (neg, i) => {
+		const res = neg.sourceString
+			? parseInt(i.sourceString, 10) * -1
+			: parseInt(i.sourceString, 10);
+		return res;
+	},
+	float: f => parseFloat(f.sourceString),
+	note: (n) => {
+		const res = Number.isNaN(n.sourceString)
+			? n.sourceString
+			: +n.sourceString;
+		return res;
+	},
 	rhythm: (r, num, beat) => r.sourceString + num.sourceString + beat.sourceString,
 });
 
@@ -143,11 +158,12 @@ export function runScene(text) {
 		// 3. reduce the current set
 		//    by appending tab-prefixed
 		//    lines onto their predecessor.
-		.reduce((lines, thisLine, i) => {
+		.reduce((srcLines, thisLine) => {
 			// If this line is only whitespace and a comment,
 			// let's return early and ignore it here. This will
 			// allow us to support multi-line calls with comments
 			// interspersed.
+			const lines = srcLines.splice();
 			if (thisLine.trim().charAt(0) === '#') {
 				return lines;
 			}
@@ -193,11 +209,9 @@ export function runScene(text) {
 				// Those seem complicated so instead
 				// let's be marginally helpful by
 				// referencing which "command" it is.
-				throw new Error(
-					String(match.message)
-						.replace('Line 1', `Command ${i}`)
-						.replace('> 1 | ', '>     ')
-				);
+				throw new Error(String(match.message)
+					.replace('Line 1', `Command ${i}`)
+					.replace('> 1 | ', '>     '));
 			}
 			// Next we give that to the semantics tool
 			// that we imbued with the `toAST` operation.
