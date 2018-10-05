@@ -5,6 +5,7 @@ import mtof from '../helpers/mtof';
 import { parseArgument } from '../helpers/parseArguments';
 import BufferLoader from '../helpers/BufferLoader';
 import drumMap from '../helpers/drumMap';
+import drumMap808 from '../helpers/drumMap808';
 
 // Taking the easy route here: let's store the drums in
 // global variables here so each instance of the `Drums`
@@ -24,7 +25,7 @@ class Drums extends Block {
 		// If the buffers don't already exist and we're
 		// not trying to load them... do that.
 		if (!drumBuffers.length && !loadingDrums) {
-			this.loadDrumSounds();
+			this.loadDrumSounds(this.type);
 		}
 	}
 
@@ -56,10 +57,17 @@ class Drums extends Block {
 		// the ouput.
 		sample.connect(this.getOutput());
 	}
-	loadDrumSounds() {
+	loadDrumSounds(type) {
 		loadingDrums = true;
+    // Decide which map to use based on type
+    let mapFile
+    if (type == 2){
+      mapFile = drumMap808;
+    } else {
+      mapFile = drumMap;
+    }
 		// Get a list of files
-		const files = Object.keys(drumMap).map(key => drumMap[key].file);
+		const files = Object.keys(mapFile).map(key => mapFile[key].file);
 		// Load the files!
 		const loader = new BufferLoader(context, files, list => {
 			// set our global variable to the list of buffers. Done.
