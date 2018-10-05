@@ -7,6 +7,11 @@ import BufferLoader from '../helpers/BufferLoader';
 import drumMap from '../helpers/drumMap';
 import drumMap808 from '../helpers/drumMap808';
 
+const typeMap = {
+  0: 'acoustic',
+  1: '808'
+}
+
 // Taking the easy route here: let's store the drums in
 // global variables here so each instance of the `Drums`
 // class has access to them.
@@ -25,7 +30,7 @@ class Drums extends Block {
 		// If the buffers don't already exist and we're
 		// not trying to load them... do that.
 		if (!drumBuffers.length && !loadingDrums) {
-			this.loadDrumSounds(this.type);
+			this.loadDrumSounds();
 		}
 	}
 
@@ -57,14 +62,17 @@ class Drums extends Block {
 		// the ouput.
 		sample.connect(this.getOutput());
 	}
-	loadDrumSounds(type) {
+	loadDrumSounds() {
 		loadingDrums = true;
     // Decide which map to use based on type
     let mapFile
-    if (type == 2){
+    let drumType = typeMap[this.type.next()]
+    if (drumType == '808'){
       mapFile = drumMap808;
+      console.log('type == 808');
     } else {
       mapFile = drumMap;
+      console.log('type != 808');
     }
 		// Get a list of files
 		const files = Object.keys(mapFile).map(key => mapFile[key].file);
