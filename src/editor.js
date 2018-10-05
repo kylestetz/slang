@@ -33,7 +33,7 @@ play @synth
 `;
 
 const editor = CodeMirror(document.querySelector('#editor'), {
-	value: existingCode || defaultCode,
+	value: window.slangPatch || existingCode || defaultCode,
 	mode: 'slang',
 	theme: 'duotone-light',
 	indentWithTabs: true,
@@ -65,6 +65,7 @@ function clearError() {
 const $run = document.querySelector('[data-run]');
 const $stop = document.querySelector('[data-stop]');
 const $status = document.querySelector('[data-status]');
+const $url = document.querySelector('[data-url]');
 
 function status(str) {
 	$status.textContent = str;
@@ -94,9 +95,35 @@ function run() {
 	// save the scene to localStorage
 	window.localStorage.setItem('code', value);
 }
+function createUrl() {
+	const value = editor.getValue();
+	// The /save route of our express server is
+	// expecting a JSON blob containing a `text` field.
+	fetch('/save', {
+		method: 'POST',
+		mode: 'cors',
+		cache: 'default',
+		body: JSON.stringify({ text: value }),
+		headers: {
+			'Content-Type': 'application/json',
+			'Access-Control-Request-Method': 'post',
+			'Access-Control-Allow-Credentials': 'true',
+		},
+	})
+		.then(response => response.text())
+		.then((text) => {
+			// Redirect the browser to the newly created patch.
+			window.location.pathname = `/${text}`;
+		})
+		.catch((e) => {
+			console.error(e);
+			displayError('Oh no! There’s a problem with the server. Try again in a bit.');
+		});
+}
 
 $run.addEventListener('click', run);
 $stop.addEventListener('click', stop);
+$url.addEventListener('click', createUrl);
 
 // ------------------------------ EDITOR ------------------------------
 
