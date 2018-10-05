@@ -131,6 +131,10 @@ footer a:hover {
 	background-color: #fb5e39;
 }
 
+.button.blue {
+	background-color: #28bed3;
+}
+
 .button.gray {
 	background-color: gray;
 }
