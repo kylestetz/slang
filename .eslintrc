@@ -31,7 +31,8 @@
           {
               "devDependencies": [
                   "dist/*.js",
-                  "packing/*.js"
+                  "packing/*.js",
+                  "server/**/*.js"
               ]
           }
       ]

@@ -2,11 +2,13 @@ const opn = require('opn');
 const path = require('path');
 const express = require('express');
 const webpack = require('webpack');
-const devMiddlewareFn = require('webpack-dev-middleware');
-const webpackConfig = require('./webpack.config.js');
-const bodyParser = require('body-parser');
 const { MongoClient } = require('mongodb');
+const devMiddlewareFn = require('webpack-dev-middleware');
+const bodyParser = require('body-parser');
+
+const webpackConfig = require('../packing/webpack.config.js');
 const helpers = require('./helpers');
+const MongoConfig = require('./mongo/mongo.config.js');
 
 // default port where dev server listens for incoming traffic
 const port = 5555;
@@ -18,6 +20,19 @@ const devMiddleware = devMiddlewareFn(compiler, {
 	publicPath: webpackConfig.output.publicPath,
 	quiet: true,
 });
+const notFoundPatch = `# Whoops! We couldn’t a patch at this URL.
+# You get the 404 womp womp patch instead.
+
+@notFoundLeft (adsr (osc tri)) + (pan -1)
+@notFoundRight (adsr (osc tri)) + (pan 1)
+
+play @notFoundLeft
+	(rhythm [8n 8n 8n 8n 8n r1n r32n])
+	(notes [c5 b4 a#4 a4 g#4])
+
+play @notFoundRight
+	(rhythm [r32n 8n 8n 8n 8n 8n r1n])
+	(notes (transpose -5 [c5 b4 a#4 a4 g#4]))'`;
 
 // We are going to send JSON blobs so let's have
 // bodyParser get the data ready for us.
@@ -47,49 +62,43 @@ devMiddleware.waitUntilValid(() => {
 	}
 });
 
-// TODO: Mongo.connect() is not a function error and redirects to a HTML URL
 // Connect to the database, add our routes, then start the server.
-MongoClient.connect('mongodb://127.0.0.1:27017/slang', (error, db) => {
-	if (error) {
+MongoClient.connect(`mongodb://${MongoConfig.HOST}:${MongoConfig.PORT}`, (err, client) => {
+	if (err) {
 		console.log('Oh no! The mongo database failed to start.');
-		console.error(error);
-		return process.exit(1);
+		console.error(err);
+		return;
+	}
+
+	const db = client.db(MongoConfig.NAME);
+	const patches = db.collection('Patch');
+
+	async function cleanup() {
+		await patches.deleteMany({
+			$or: [
+				{ exp: { $exists: false } },
+				{ exp: { $lte: new Date().getTime() } },
+			],
+		}, (cleanupErr, data) => {
+			if (cleanupErr === null && data.result.n) console.log(`--- Cleanup: ${data.result.n} Patches removed`);
+		});
 	}
 
 	// Load a saved patch, if one exists.
+	app.get('/:hash', async (req, res) => {
+		console.log(`--- Looking for: ${req.params.hash}`);
+		patches.find({ hash: req.params.hash }).toArray((findErr, items) => {
+			const message = findErr || !items.length ? 'Not Found' : 'Found!';
+			console.log(`--- ${req.params.hash} ${message}`);
+			// Let's be clever and present a "not found" error
+			// inside of the text editor itself.
+			let text = findErr || !items.length ? notFoundPatch : items[0].text;
 
-	app.get('/:id', (req, res) => {
-		const patches = db.collection('patches');
-		patches.find({ _id: req.params.id }).toArray((err, items) => {
-			if (err || !items.length) {
-				// Let's be clever and present a "not found" error
-				// inside of the text editor itself.
-				return res.render('patch', {
-					patch: {
-						text: '# Whoops! We couldn’t a patch at this URL.\n'
-							+ '# You get the 404 womp womp patch instead.\n'
-							+ '\n'
-							+ '@notFoundLeft (adsr (osc tri)) + (pan -1)\n'
-							+ '@notFoundRight (adsr (osc tri)) + (pan 1)\n'
-							+ '\n'
-							+ 'play @notFoundLeft\n'
-							+ '	(rhythm [8n 8n 8n 8n 8n r1n r32n])\n'
-							+ '	(notes [c5 b4 a#4 a4 g#4])\n'
-							+ '\n'
-							+ 'play @notFoundRight\n'
-							+ '	(rhythm [r32n 8n 8n 8n 8n 8n r1n])\n'
-							+ '	(notes (transpose -5 [c5 b4 a#4 a4 g#4]))',
-					},
-				});
-			}
-
-			const patch = items[0];
 			// We're using a string literal to dump out the text, so
 			// to avoid XSS let's remove any backticks present in the
 			// string itself.
-			patch.text = patch.text.replace(/`/g, '');
-			res.render('patch', { patch });
-			return true;
+			text = text.replace(/`/g, '');
+			res.render('patch', { patch: text });
 		});
 	});
 
@@ -108,38 +117,44 @@ MongoClient.connect('mongodb://127.0.0.1:27017/slang', (error, db) => {
 	// update in some way. Redirecting to the new URL reinforces the fact
 	// that it's a one-time save.
 
-	app.post('/save', (req, res) => {
+	app.post('/save', async (req, res) => {
+		// Cleanup before saving
+		await cleanup();
 		const { text } = req.body;
+		const lifeSpan = 2; // Delete hashs after 2 days
+		const exp = new Date().getTime() + (lifeSpan * 60 * 60 * 24 * 1000);
+		console.log('--- Saving...');
 
 		// Need to set some limits so you don't blow up my database!
 		if (!text || text.length > 10000) {
 			res.statusCode = '400';
-			return res.send(':(');
+			res.send(':(');
+			return;
 		}
 
-		const patches = db.collection('patches');
+		// No collitions anymore
+		const hash = helpers.createHash();
 
-		// In theory there can be ID collisions, and in practice that
-		// does happen occasionally when you have a system like this
-		// doing ~1000+ saves per day, but we're not going to worry
-		// about that right now.
-		const id = helpers.createHash();
-		patches.insert({ _id: id, text }, (err) => {
-			if (err) {
-				res.statusCode = 400;
-				return res.send('error');
+		await patches.insertOne({ hash, text, exp }, (saveErr) => {
+			if (saveErr) {
+				res.statusCode = 500;
+				res.send('Error while saving your Patch');
 			}
-			// return the URL
-			return res.send(id);
+			console.log(`--- ${hash} Saved!`);
+			res.send(hash);
 		});
+	});
 
-		return true;
+	app.get('/list/all', async (req, res) => {
+		// Insert some documents
+		await patches.find({}).toArray((testErr, docs) => {
+			console.log('--- All hashes listed');
+			res.send(docs);
+		});
 	});
 
 	// Start the server.
 	app.listen(port, () => {
 		console.log('Slang is running on port', (process.env.PORT || 8000), 'at', Date());
 	});
-
-	return true;
 });

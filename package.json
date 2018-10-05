@@ -7,7 +7,7 @@
     "prestart": "npm run lint",
     "start": "echo 'STARTING' && npm run dev:webpack && npm run dev:server",
     "dev:webpack": "webpack --config packing/webpack.config.js --progress --hide-modules",
-    "dev:server": "node packing/server.js",
+    "dev:server": "node server/server.js",
     "lint": "echo 'LINTING' && eslint --ext .js src packing && echo 'Syntax is ok...'",
     "prebuild": "npm run lint",
     "build": "echo 'BUILDING' && webpack --config packing/webpack.prod.js"
@@ -16,7 +16,6 @@
   "license": "ISC",
   "dependencies": {
     "adsr-envelope": "^1.0.0",
-    "body-parse": "^0.1.0",
     "body-parser": "^1.18.3",
     "codemirror": "^5.38.0",
     "ejs": "^2.6.1",
