@@ -69,10 +69,8 @@ class Drums extends Block {
     let drumType = typeMap[this.type.next()]
     if (drumType == '808'){
       mapFile = drumMap808;
-      console.log('type == 808');
     } else {
       mapFile = drumMap;
-      console.log('type != 808');
     }
 		// Get a list of files
 		const files = Object.keys(mapFile).map(key => mapFile[key].file);
