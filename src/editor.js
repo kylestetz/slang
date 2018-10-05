@@ -1,6 +1,8 @@
 import CodeMirror from 'codemirror';
 import 'codemirror/lib/codemirror.css';
 import 'codemirror/theme/duotone-light.css';
+import * as simpleMode from 'codemirror/addon/mode/simple';
+import js from 'codemirror/mode/clojure/clojure';
 
 import { runScene, clearScene } from './slang';
 import context from './helpers/context';
@@ -146,4 +148,4 @@ editor.on('keydown', (c, e) => {
 	}
 });
 
-export default logo;
+export { logo, simpleMode, js };

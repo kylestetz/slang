@@ -34,7 +34,6 @@ function parsePlay(operation) {
 }
 
 function parseTempo(operation) {
-	console.log(operation);
 	changeTempo(operation.value);
 }
 

@@ -10,9 +10,9 @@ const semantics = grammar.createSemantics();
 semantics.addOperation('toAST', {
 	Comment(hash, text) {
 		return {
+			type: 'comment',
 			hash,
 			text,
-			type: 'comment',
 		};
 	},
 	Line: rule => rule.toAST(),
@@ -100,7 +100,6 @@ semantics.addOperation('toAST', {
 		return {
 			type: 'list',
 			arguments: soundArguments.asIteration().toAST(),
-			lb,
 			rb,
 		};
 	},
@@ -112,7 +111,6 @@ semantics.addOperation('toAST', {
 				parseInt(arg1.sourceString, 10),
 				parseInt(arg2.sourceString, 10),
 			),
-			lb,
 			rb,
 		};
 	},
@@ -121,23 +119,22 @@ semantics.addOperation('toAST', {
 		return {
 			type: 'list',
 			arguments: Range.chromatic([arg1.sourceString, arg2.sourceString]),
-			lb,
 			rb,
 		};
 	},
 
 	int: (neg, i) => {
-		const res = neg.sourceString
+		const int = neg.sourceString
 			? parseInt(i.sourceString, 10) * -1
 			: parseInt(i.sourceString, 10);
-		return res;
+		return int;
 	},
 	float: f => parseFloat(f.sourceString),
 	note: (n) => {
-		const res = Number.isNaN(n.sourceString)
+		const note = (typeof n.sourceString !== 'number')
 			? n.sourceString
 			: +n.sourceString;
-		return res;
+		return note;
 	},
 	rhythm: (r, num, beat) => r.sourceString + num.sourceString + beat.sourceString,
 });
@@ -164,7 +161,7 @@ export function runScene(text) {
 			// let's return early and ignore it here. This will
 			// allow us to support multi-line calls with comments
 			// interspersed.
-			const lines = srcLines.splice();
+			const lines = srcLines.slice();
 			if (thisLine.trim().charAt(0) === '#') {
 				return lines;
 			}

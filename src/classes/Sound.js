@@ -62,8 +62,7 @@ class Sound {
 		this.connections[index] = [];
 
 		const model = pipe.reduce((m, block) => {
-			// i removed prom params as it is not used
-			const theModel = Object.assign({}, m);
+			const theModel = m || {};
 			// A block can either be a simple Block function
 			// like `osc` & `filter`, OR it can be a polyblock.
 			// We have to treat those two cases differently.
@@ -86,13 +85,13 @@ class Sound {
 				// it by name in the model. Otherwise,
 				// give it an internal ID that we can
 				// use to reference it.
-				model[thisId] = new classMap[block.function](...block.arguments);
-				model[thisId].instantiate();
+				theModel[thisId] = new classMap[block.function](...block.arguments);
+				theModel[thisId].instantiate();
 
 				// Add this ID to the connection list.
 				this.connections[index].push(thisId);
 
-				return model;
+				return theModel;
 			}
 			throw new Error(`${this.name}: Block type "${block.function}" does not exist`);
 		}, {});
