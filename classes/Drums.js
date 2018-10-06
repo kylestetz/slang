@@ -22,14 +22,13 @@ class Drums extends Block {
 	constructor(...args) {
 		super(...args);
 
-		// In the future we can support different drum sets
-		// using a simple integer argument.
+    // this.arguments will be used to set the type
 		this.type = this.arguments[0] || parseArgument(0);
 
 		// Super basic lazy loading of drum sounds.
-		// If the buffers don't already exist and we're
-		// not trying to load them... do that.
-		if (!drumBuffers.length && !loadingDrums) {
+    // If we're not trying to load the buffers...
+    // do that
+		if (!loadingDrums) {
 			this.loadDrumSounds();
 		}
 	}
