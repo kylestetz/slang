@@ -5,36 +5,38 @@ import mtof from '../helpers/mtof';
 import { parseArgument } from '../helpers/parseArguments';
 import BufferLoader from '../helpers/BufferLoader';
 import drumMap from '../helpers/drumMap';
-import drumMap808 from '../helpers/drumMap808';
 
 const typeMap = {
-  0: 'acoustic',
-  1: '808'
+	0: 'acoustic',
+	1: '808'
 }
 
 // Taking the easy route here: let's store the drums in
 // global variables here so each instance of the `Drums`
 // class has access to them.
 let loadingDrums = false;
-let drumBuffers = [];
+let drumBuffers = {
+	acoustic: [],
+	808: [],
+}
 
 class Drums extends Block {
 	constructor(...args) {
 		super(...args);
 
-    // this.arguments will be used to set the type
+		// this.arguments will be used to set the type
 		this.type = this.arguments[0] || parseArgument(0);
+		this.drumType = typeMap[this.type.next()];
 
-		// Super basic lazy loading of drum sounds.
-    // If we're not trying to load the buffers...
-    // do that
-		if (!loadingDrums) {
+		// if we don't have buffers for this specific type and we're
+		// not already loading them, go ahead and load them.
+		if (!drumBuffers[this.drumType].length || !loadingDrums) {
 			this.loadDrumSounds();
 		}
 	}
 
 	schedule(start, stop, note, envelopeMode) {
-		if (!drumBuffers.length || loadingDrums) return;
+		if (!drumBuffers[this.drumType].length || loadingDrums) return;
 		// we only have 12 samples available but we shouldn't
 		// burden the user with that knowledge so let's use
 		// mod 12, which allows them to use chords, scales,
@@ -42,7 +44,7 @@ class Drums extends Block {
 		const drumSound = note % 12;
 
 		const sample = context.createBufferSource();
-		sample.buffer = drumBuffers[drumSound];
+		sample.buffer = drumBuffers[this.drumType][drumSound];
 
 		sample.start(start);
 		sample.stop(stop);
@@ -63,20 +65,13 @@ class Drums extends Block {
 	}
 	loadDrumSounds() {
 		loadingDrums = true;
-    // Decide which map to use based on type
-    let mapFile
-    let drumType = typeMap[this.type.next()]
-    if (drumType == '808'){
-      mapFile = drumMap808;
-    } else {
-      mapFile = drumMap;
-    }
+		// Decide which map to use based on type
 		// Get a list of files
-		const files = Object.keys(mapFile).map(key => mapFile[key].file);
+		const files = Object.keys(drumMap[this.drumType]).map(key => drumMap[this.drumType][key].file);
 		// Load the files!
 		const loader = new BufferLoader(context, files, list => {
 			// set our global variable to the list of buffers. Done.
-			drumBuffers = list;
+			drumBuffers[this.drumType] = list;
 			loadingDrums = false;
 		});
 		loader.load();
