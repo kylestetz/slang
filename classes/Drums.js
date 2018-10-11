@@ -14,7 +14,11 @@ const typeMap = {
 // Taking the easy route here: let's store the drums in
 // global variables here so each instance of the `Drums`
 // class has access to them.
-let loadingDrums = false;
+let loadingDrums = {
+	acousting: false,
+	808: false,
+}
+
 let drumBuffers = {
 	acoustic: [],
 	808: [],
@@ -30,13 +34,13 @@ class Drums extends Block {
 
 		// if we don't have buffers for this specific type and we're
 		// not already loading them, go ahead and load them.
-		if (!drumBuffers[this.drumType].length || !loadingDrums) {
+		if (!drumBuffers[this.drumType].length || !loadingDrums[this.drumType]) {
 			this.loadDrumSounds();
 		}
 	}
 
 	schedule(start, stop, note, envelopeMode) {
-		if (!drumBuffers[this.drumType].length || loadingDrums) return;
+		if (!drumBuffers[this.drumType].length || loadingDrums[this.drumType]) return;
 		// we only have 12 samples available but we shouldn't
 		// burden the user with that knowledge so let's use
 		// mod 12, which allows them to use chords, scales,
@@ -64,7 +68,7 @@ class Drums extends Block {
 		sample.connect(this.getOutput());
 	}
 	loadDrumSounds() {
-		loadingDrums = true;
+		loadingDrums[this.drumType] = true;
 		// Decide which map to use based on type
 		// Get a list of files
 		const files = Object.keys(drumMap[this.drumType]).map(key => drumMap[this.drumType][key].file);
@@ -72,7 +76,7 @@ class Drums extends Block {
 		const loader = new BufferLoader(context, files, list => {
 			// set our global variable to the list of buffers. Done.
 			drumBuffers[this.drumType] = list;
-			loadingDrums = false;
+			loadingDrums[this.drumType] = false;
 		});
 		loader.load();
 	}
